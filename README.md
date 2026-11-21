@@ -1,22 +1,45 @@
+<div align="center">
+
+<img src="app/src/assets/pollo-os-logo.svg" alt="" width="72">
+
 # Pollo OS
 
-**Agentes de IA que trabalham para a sua empresa.**
+### Agentes de IA que trabalham para a sua empresa
 
-O Pollo OS é um espaço de trabalho onde as pessoas conversam com Bots (colegas de trabalho de IA)
-que executam tarefas nos sistemas da empresa e pedem aprovação antes de qualquer ação importante.
-Dentro dele ficam os apps da Pollo: Flipform, Flip Intelligence, Inteligência de Mercado e CRM de
-Vendas integrado ao ERP.
+</div>
 
-## Documentos
+O Pollo OS é um espaço de trabalho onde as pessoas conversam com agentes de IA (os Bots) e eles
+executam tarefas: usam navegador e ferramentas, consultam os sistemas da empresa e pedem aprovação
+antes de qualquer ação importante.
 
-**Arquitetura (E0, 21/11/2026):** [inventário](docs/architecture/agents-inventory.md) · [auditoria Openbox](docs/architecture/openbox-reuse-audit.md) · [lacunas](docs/architecture/pollo-os-gap-analysis.md) · [ADR-001](docs/architecture/pollo-os-adr-001.md)
+Dentro do Pollo OS, o cliente também acessa os apps da Pollo (Flipform, Flip Intelligence, painel
+de inteligência de mercado e CRM de vendas integrado ao ERP), e os Bots podem usar esses apps
+como ferramentas.
 
-**Visão (anterior ao E0):**
+## O que tem aqui
 
-1. [Mapa da lógica](docs/01-mapa-da-logica.md): as ideias que estudamos e vamos aplicar.
-2. [Projeto Pollo OS](docs/02-projeto-pollo-os.md): o produto, a arquitetura e a ordem de construção.
-3. [Prompts](docs/03-prompts.md): o que colar no app de criação, fase por fase.
+| Pasta | O que é |
+| --- | --- |
+| `app/` | O app web (React + Vite) |
+| `desktop/` | O app para Windows e Mac (Tauri) |
+| `mobile/` | O app para celular |
+| `extension/` | A extensão do navegador |
+| `agent-*/` | Adaptadores para agentes de vários frameworks (LangGraph, CrewAI, Mastra, Claude SDK…) |
+| `api/` | A especificação da API do servidor (OpenAPI, 433 operações) |
+| `docs/pollo-os/` | **Prompts para construir o que falta** |
 
-## Estado
+## O que falta construir
 
-Fase de projeto. Nenhum código ainda.
+O servidor central não vem neste código. Os prompts para construí-lo, módulo por módulo, estão
+em [`docs/pollo-os/01-servidor-prompts.md`](docs/pollo-os/01-servidor-prompts.md).
+
+- [Servidor do Pollo OS](docs/pollo-os/01-servidor-prompts.md)
+- [Apps da Pollo como ferramentas dos Bots](docs/pollo-os/02-apps-prompts.md)
+- [Identidade visual e Bots](docs/pollo-os/03-identidade-prompts.md)
+
+## Origem e licença
+
+O Pollo OS foi criado a partir do modelo de código aberto
+[OpenBot](https://github.com/CopilotKit/OpenBot), da CopilotKit, distribuído sob a licença MIT.
+O aviso de copyright original está mantido em [LICENSE](LICENSE), como a licença exige. O README
+original está em [docs/openbot-upstream/README.md](docs/openbot-upstream/README.md).
