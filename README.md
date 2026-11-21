@@ -1,45 +1,35 @@
 <div align="center">
 
-<img src="app/src/assets/pollo-os-logo.svg" alt="" width="72">
-
 # Pollo OS
 
-### Agentes de IA que trabalham para a sua empresa
+### O sistema operacional da sua empresa, com agentes de IA trabalhando junto
 
 </div>
 
-O Pollo OS é um espaço de trabalho onde as pessoas conversam com agentes de IA (os Bots) e eles
-executam tarefas: usam navegador e ferramentas, consultam os sistemas da empresa e pedem aprovação
-antes de qualquer ação importante.
+O Pollo OS é a interface onde a empresa reúne as suas ferramentas e trabalha com agentes de IA
+(os Bots). Não é um CRM nem mais um sistema de gestão: é o lugar de onde a pessoa abre e usa os
+apps da Pollo, como o **Flipform** e o **Flip Intelligence**, e onde os Bots executam tarefas
+nesses apps, pedindo aprovação antes de qualquer ação importante.
 
-Dentro do Pollo OS, o cliente também acessa os apps da Pollo (Flipform, Flip Intelligence, painel
-de inteligência de mercado e CRM de vendas integrado ao ERP), e os Bots podem usar esses apps
-como ferramentas.
+## Situação
 
-## O que tem aqui
+O **front está sendo refeito do zero**, a partir de uma nova referência visual. O que está neste
+repositório hoje é a base que não depende do visual.
 
 | Pasta | O que é |
 | --- | --- |
-| `app/` | O app web (React + Vite) |
-| `desktop/` | O app para Windows e Mac (Tauri) |
-| `mobile/` | O app para celular |
-| `extension/` | A extensão do navegador |
+| `api/` | A especificação da API do servidor (OpenAPI) |
+| `shared/` | Código compartilhado (tipos e regras) |
 | `agent-*/` | Adaptadores para agentes de vários frameworks (LangGraph, CrewAI, Mastra, Claude SDK…) |
-| `api/` | A especificação da API do servidor (OpenAPI, 433 operações) |
-| `docs/pollo-os/` | **Prompts para construir o que falta** |
+| `management-agent/` | O agente que administra o Pollo OS |
+| `docs/pollo-os/` | Prompts e mapas do Pollo OS |
 
-## O que falta construir
-
-O servidor central não vem neste código. Os prompts para construí-lo, módulo por módulo, estão
-em [`docs/pollo-os/01-servidor-prompts.md`](docs/pollo-os/01-servidor-prompts.md).
+## Documentos
 
 - [Servidor do Pollo OS](docs/pollo-os/01-servidor-prompts.md)
 - [Apps da Pollo como ferramentas dos Bots](docs/pollo-os/02-apps-prompts.md)
-- [Identidade visual e Bots](docs/pollo-os/03-identidade-prompts.md)
-- [**Prompt completo para o Emergent**](docs/pollo-os/04-emergent-prompt.md) (app inteiro, em 6 etapas)
-- [**Prompt do front e do visual (Astryx)**](docs/pollo-os/07-front-visual-astryx.md) (cole antes das etapas do 04)
-- [Mapa da estrutura](docs/pollo-os/06-mapa-da-estrutura.md) (pastas, telas, rotas e tabelas)
-- [Publicar: GitHub → Neon → Vercel](docs/pollo-os/05-deploy-github-neon-vercel.md)
+- [Mapa do backend](docs/pollo-os/06-mapa-da-estrutura.md) (rotas, tabelas e variáveis)
+- [Ver ao vivo e publicar: GitHub → Neon → Vercel](docs/pollo-os/05-deploy-github-neon-vercel.md)
 
 ## Licença
 

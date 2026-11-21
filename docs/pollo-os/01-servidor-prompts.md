@@ -1,8 +1,9 @@
 # Pollo OS — prompts para construir o servidor
 
-O app do Pollo OS (web, desktop, mobile, extensão e agentes) já está neste repositório. O que **ainda
-não existe** é o servidor central. Estes prompts servem para construir um servidor próprio, que fala a mesma "língua" do app, no app de criação
-de apps que você usar.
+> **Referência.** Estes prompts foram escritos para o front antigo, que foi descartado. Valem como
+> referência das regras do servidor (módulos, segurança, auditoria, aprovações), não como roteiro a
+> seguir ao pé da letra. A versão atual das rotas e tabelas está no
+> [mapa do backend](06-mapa-da-estrutura.md).
 
 ## Como usar
 
@@ -13,8 +14,8 @@ de apps que você usar.
    indicado e o `api/openapi/common.yaml` (que tem os tipos compartilhados).
 3. Comece sempre pelo **prompt-base** (Módulo 0) num projeto novo e cole os outros no mesmo
    projeto, um de cada vez.
-4. Para testar, rode o app deste repositório apontando para o seu servidor (porta 3001). A tela
-   que funcionar mostra que o módulo está certo.
+4. Para testar, chame as rotas do servidor (porta 3001) e confira as respostas contra a
+   especificação.
 
 Tecnologia recomendada (é a mesma que o servidor original usa, e o app espera): **TypeScript +
 Bun + Hono + PostgreSQL**. Se o seu app de criação só faz Node + Supabase, funciona também: troque
