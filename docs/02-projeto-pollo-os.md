@@ -1,5 +1,7 @@
 # Projeto Pollo OS
 
+> **Superado para a engenharia pelo [ADR-001](architecture/pollo-os-adr-001.md)** (21/11/2026): o Pollo OS evolui dentro do FlipForm, e não como app novo. Este documento fica como visão de produto.
+
 ## O que é
 
 O Pollo OS é um espaço de trabalho onde empresas têm **Bots**: colegas de trabalho de IA que
