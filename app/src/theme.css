@@ -3,36 +3,36 @@
 :root {
   color-scheme: light;
   /*
-   * Three surfaces, darkest to lightest, the way Linear draws them: the frame (the sidebar's tint,
-   * which the window edge shares), the panel the page sits in, and the white cards on it. The frame
-   * is CopilotKit's pale lavender, the grays lean towards its lilac, the ring is its periwinkle, and
-   * the selected sidebar row is a lilac tint. Only shadcn's own tokens, so a stock shadcn theme drops in.
+   * Identidade Pollo OS (protótipo Pollo CEO v3): três superfícies em tons de areia — a moldura
+   * (menu lateral), a página off-white e os cartões brancos —, tinta marrom-escura e a cor da marca
+   * #CA6E23 nos botões principais, no foco e no item selecionado. Paleta em branding/README.md.
+   * Só tokens do shadcn, então um tema shadcn comum continua encaixando.
    */
-  --background: oklch(0.983 0.003 286.4);
-  --foreground: oklch(0.108 0.015 220.9);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.108 0.015 220.9);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.108 0.015 220.9);
-  --primary: oklch(0.108 0.015 220.9);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.956 0.005 286.3);
-  --secondary-foreground: oklch(0.108 0.015 220.9);
-  --muted: oklch(0.956 0.005 286.3);
-  --muted-foreground: oklch(0.506 0.013 285.9);
-  --accent: oklch(0.956 0.005 286.3);
-  --accent-foreground: oklch(0.108 0.015 220.9);
-  --destructive: oklch(0.504 0.178 22.9);
-  --success: oklch(0.514 0.1 167.2);
-  --border: oklch(0.894 0.014 286.1);
-  --input: oklch(0.894 0.014 286.1);
-  --ring: oklch(0.644 0.167 276.1);
-  --chart-1: oklch(0.869 0.022 252.894);
-  --chart-2: oklch(0.554 0.046 257.417);
-  --chart-3: oklch(0.446 0.043 257.281);
-  --chart-4: oklch(0.372 0.044 257.287);
-  --chart-5: oklch(0.279 0.041 260.031);
-  --radius: 0.625rem;
+  --background: #faf9f6;
+  --foreground: #2b201b;
+  --card: #ffffff;
+  --card-foreground: #2b201b;
+  --popover: #ffffff;
+  --popover-foreground: #2b201b;
+  --primary: #ca6e23;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f0e9;
+  --secondary-foreground: #2b201b;
+  --muted: #f4f0e9;
+  --muted-foreground: #5f534c;
+  --accent: #f4f0e9;
+  --accent-foreground: #2b201b;
+  --destructive: #b53a30;
+  --success: #2c7a57;
+  --border: #e8e2d8;
+  --input: #d8cfc2;
+  --ring: #ca6e23;
+  --chart-1: #ca6e23;
+  --chart-2: #2f6fb8;
+  --chart-3: #2e8a68;
+  --chart-4: #9c640a;
+  --chart-5: #8e8279;
+  --radius: 0.75rem;
   /*
    * The pattern behind empty states, in three parts so a customer can change each without touching
    * a component: the tile (an SVG used as a mask, so only its shapes' opacity matters), its colour,
@@ -40,56 +40,56 @@
    * skins.css, since it is drawn for this palette.
    */
   --empty-pattern: url("./assets/patterns/dot-matrix.svg");
-  --empty-pattern-color: oklch(0.746 0.117 279.9);
-  --empty-pattern-opacity: 0.25;
-  --sidebar: oklch(0.948 0.011 286.2);
-  --sidebar-foreground: oklch(0.108 0.015 220.9);
-  --sidebar-primary: oklch(0.108 0.015 220.9);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.832 0.085 281.4 / 30%);
-  --sidebar-accent-foreground: oklch(0.108 0.015 220.9);
-  --sidebar-border: oklch(0.894 0.014 286.1);
-  --sidebar-ring: oklch(0.644 0.167 276.1);
+  --empty-pattern-color: #ca6e23;
+  --empty-pattern-opacity: 0.18;
+  --sidebar: #f4f0e9;
+  --sidebar-foreground: #2b201b;
+  --sidebar-primary: #ca6e23;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f9ede1;
+  --sidebar-accent-foreground: #94500f;
+  --sidebar-border: #e8e2d8;
+  --sidebar-ring: #ca6e23;
 }
 
 .dark {
   color-scheme: dark;
-  --empty-pattern-color: oklch(0.832 0.085 281.4);
-  --empty-pattern-opacity: 0.15;
-  /* The same three surfaces on a near-black plum ground: the frame darkest, the cards lightest. */
-  --background: oklch(0.182 0.023 296.6);
-  --foreground: oklch(0.956 0.005 286.3);
-  --card: oklch(0.212 0.028 297.1);
-  --card-foreground: oklch(0.956 0.005 286.3);
-  --popover: oklch(0.212 0.028 297.1);
-  --popover-foreground: oklch(0.956 0.005 286.3);
-  --primary: oklch(0.956 0.005 286.3);
-  --primary-foreground: oklch(0.108 0.015 220.9);
-  /* Lighter than the cards, as shadcn's dark fills are, so a button or badge never reads as a hole. */
-  --secondary: oklch(0.253 0.032 297.6);
-  --secondary-foreground: oklch(0.956 0.005 286.3);
-  --muted: oklch(0.253 0.032 297.6);
-  --muted-foreground: oklch(0.69 0.017 285.9);
-  --accent: oklch(0.28 0.037 297.7);
-  --accent-foreground: oklch(0.956 0.005 286.3);
-  --destructive: oklch(0.792 0.121 16.4);
-  --success: oklch(0.832 0.13 170.1);
-  --border: oklch(0.28 0.035 298.6);
-  --input: oklch(0.28 0.035 298.6);
-  --ring: oklch(0.713 0.151 277.7);
-  --chart-1: oklch(0.869 0.022 252.894);
-  --chart-2: oklch(0.554 0.046 257.417);
-  --chart-3: oklch(0.446 0.043 257.281);
-  --chart-4: oklch(0.372 0.044 257.287);
-  --chart-5: oklch(0.279 0.041 260.031);
-  --sidebar: oklch(0.156 0.017 295.8);
-  --sidebar-foreground: oklch(0.956 0.005 286.3);
-  --sidebar-primary: oklch(0.956 0.005 286.3);
-  --sidebar-primary-foreground: oklch(0.108 0.015 220.9);
-  --sidebar-accent: oklch(0.832 0.085 281.4 / 12%);
-  --sidebar-accent-foreground: oklch(0.956 0.005 286.3);
-  --sidebar-border: oklch(0.28 0.035 298.6);
-  --sidebar-ring: oklch(0.713 0.151 277.7);
+  --empty-pattern-color: #e08a45;
+  --empty-pattern-opacity: 0.12;
+  /* As mesmas três superfícies sobre um marrom quase preto: a moldura mais escura, os cartões mais claros. */
+  --background: #1c1613;
+  --foreground: #f3ece4;
+  --card: #241c18;
+  --card-foreground: #f3ece4;
+  --popover: #241c18;
+  --popover-foreground: #f3ece4;
+  --primary: #e08a45;
+  --primary-foreground: #1c1613;
+  /* Mais claras que os cartões, para um botão ou selo nunca parecer um buraco. */
+  --secondary: #2e2420;
+  --secondary-foreground: #f3ece4;
+  --muted: #2e2420;
+  --muted-foreground: #b3a69c;
+  --accent: #352a25;
+  --accent-foreground: #f3ece4;
+  --destructive: #e8857c;
+  --success: #6cc49b;
+  --border: #3a2f29;
+  --input: #463a33;
+  --ring: #e08a45;
+  --chart-1: #e08a45;
+  --chart-2: #6fa3dd;
+  --chart-3: #5cc093;
+  --chart-4: #d9a441;
+  --chart-5: #b3a69c;
+  --sidebar: #16110f;
+  --sidebar-foreground: #f3ece4;
+  --sidebar-primary: #e08a45;
+  --sidebar-primary-foreground: #1c1613;
+  --sidebar-accent: rgba(224, 138, 69, 0.14);
+  --sidebar-accent-foreground: #f3ece4;
+  --sidebar-border: #3a2f29;
+  --sidebar-ring: #e08a45;
 }
 
 * {
@@ -139,7 +139,8 @@ body {
   --text-2xl: 1.40625rem; /* 22.5px */
   --text-3xl: 1.7578125rem; /* 28.125px */
   --text-4xl: 2.109375rem; /* 33.75px */
-  --font-heading: var(--font-sans);
+  /* Títulos em Manrope (identidade Pollo). Até o pacote @fontsource-variable/manrope ser instalado, cai em Inter. */
+  --font-heading: "Manrope Variable", "Manrope", var(--font-sans);
   --font-sans: "Inter Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
