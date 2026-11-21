@@ -1,6 +1,6 @@
 # Projeto Pollo OS
 
-> **Superado para a engenharia pelo [ADR-001](architecture/pollo-os-adr-001.md)** (21/11/2026): o Pollo OS evolui dentro do FlipForm, e não como app novo. Este documento fica como visão de produto.
+> **Atualização (21/11/2026):** o proprietário confirmou que o Pollo OS é uma **aplicação separada**, e o FlipForm conecta depois por API. As regras de segurança e o mapa de agentes do [ADR-001](architecture/pollo-os-adr-001.md) continuam valendo.
 
 ## O que é
 

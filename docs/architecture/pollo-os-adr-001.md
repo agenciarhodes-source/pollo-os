@@ -1,6 +1,8 @@
 # ADR-001 — Arquitetura do Pollo OS / Pollo CEO sobre o FlipForm
 
 **Status:** PROPOSTA (21/11/2026). Não autoriza merge, migration, deploy nem alteração de produção.
+
+> **Revisão do proprietário (21/11/2026):** **D1 e D2 rejeitadas.** O Pollo OS será construído **como aplicação própria, separada do FlipForm**, e o FlipForm será **conectado depois**, por API (`/api/v1` dos PRs #627/#628) e SSO. Continuam válidos: o inventário, a auditoria Openbox, os três níveis de agentes, o Tool Gateway, o esquema `agent_*`, as regras de segurança e o PR A1 (que passa a nascer no repositório `pollo-os`, não no `flipform`). Antes de codificar, o proprietário quer **visualizar o sistema** (protótipos em `prototipos/`).
 **Base:** `flipform@main 6def5c5`, PRs #627 `0491f415` e #628 `94159127`, Plano Mestre v6.1, Prompt Mestre v1.
 
 ---
