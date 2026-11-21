@@ -1,0 +1,10 @@
+# Material de estudo (outro repositório, não faz parte do Pollo OS)
+_estudo-openbot/
+
+# Sistema
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
