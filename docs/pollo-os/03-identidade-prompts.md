@@ -2,7 +2,7 @@
 
 ## O que já foi trocado
 
-- O nome "OpenBot" virou "Pollo OS" em todo texto que a pessoa vê (telas, mensagens, desktop,
+- O nome "Pollo OS" aparece em todo texto que a pessoa vê (telas, mensagens, desktop,
   extensão, documentação, testes).
 - O logo do app web e o ícone da aba do navegador são o novo símbolo
   `app/src/assets/pollo-os-logo.svg` (provisório: um "P" branco num círculo laranja).
@@ -56,7 +56,7 @@ cita a fonte; 3) vendas (usa o CRM e o ERP); 4) inteligência de mercado.
 
 ### 4. Textos legais
 
-- `LICENSE`: **mantenha** o aviso da CopilotKit (exigência da licença MIT). Acrescente abaixo o
+- `LICENSE`: **mantenha** o aviso de copyright que já está no arquivo (exigência da licença MIT). Acrescente abaixo o
   copyright da Pollo para o que vocês criarem.
 - As telas de aceite de licença e login do desktop ainda mencionam a conta CopilotKit, porque esse
   fluxo usa o serviço deles. Troque quando o servidor próprio estiver pronto.

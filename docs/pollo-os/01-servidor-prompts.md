@@ -1,9 +1,7 @@
 # Pollo OS — prompts para construir o servidor
 
-O app do Pollo OS (web, desktop, mobile, extensão e agentes) já está neste repositório. O que **não**
-veio é o servidor central: no OpenBot ele é uma imagem Docker fechada da CopilotKit
-(`ghcr.io/copilotkit/openbot`) que depende do CopilotKit Intelligence, que é pago. Estes prompts
-servem para construir um servidor próprio, que fala a mesma "língua" do app, no app de criação
+O app do Pollo OS (web, desktop, mobile, extensão e agentes) já está neste repositório. O que **ainda
+não existe** é o servidor central. Estes prompts servem para construir um servidor próprio, que fala a mesma "língua" do app, no app de criação
 de apps que você usar.
 
 ## Como usar

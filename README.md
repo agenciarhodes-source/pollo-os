@@ -40,9 +40,6 @@ em [`docs/pollo-os/01-servidor-prompts.md`](docs/pollo-os/01-servidor-prompts.md
 - [Mapa da estrutura](docs/pollo-os/06-mapa-da-estrutura.md) (pastas, telas, rotas e tabelas)
 - [Publicar: GitHub → Neon → Vercel](docs/pollo-os/05-deploy-github-neon-vercel.md)
 
-## Origem e licença
+## Licença
 
-O Pollo OS foi criado a partir do modelo de código aberto
-[OpenBot](https://github.com/CopilotKit/OpenBot), da CopilotKit, distribuído sob a licença MIT.
-O aviso de copyright original está mantido em [LICENSE](LICENSE), como a licença exige. O README
-original está em [docs/openbot-upstream/README.md](docs/openbot-upstream/README.md).
+Veja [LICENSE](LICENSE).

@@ -8,7 +8,7 @@ Roteiro para quando o app gerado pelo [prompt do Emergent](04-emergent-prompt.md
 2. Crie um repositório **privado** (ex.: `pollo-os-app`). O código é o seu produto: não deixe
    público.
 3. Confira no GitHub que vieram: `package.json`, `drizzle/` (migrations), `drizzle.config.ts`,
-   `.env.example`, `vercel.json` e `LICENSE` com o aviso da CopilotKit.
+   `.env.example`, `vercel.json` e `LICENSE` (igual ao deste repositório).
 4. Confira que **não** veio nenhum `.env` com chaves de verdade. Se veio, apague o arquivo, troque
    todas as chaves que estavam nele e adicione `.env*` (menos `.env.example`) ao `.gitignore`.
 

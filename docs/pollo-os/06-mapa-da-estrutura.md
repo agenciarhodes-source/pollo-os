@@ -73,7 +73,7 @@ pollo-os-app/
 ├─ drizzle.config.ts
 ├─ vercel.json                     cron das rotinas
 ├─ .env.example
-└─ LICENSE                         MIT, com o aviso da CopilotKit
+└─ LICENSE                         igual ao deste repositório
 ```
 
 ---

@@ -1,6 +1,6 @@
 # Pollo OS — prompt completo para o Emergent
 
-Este é o prompt para recriar o Pollo OS do zero no Emergent, com base no app do OpenBot que está
+Este é o prompt para construir o Pollo OS no Emergent, usando como base a estrutura que está
 neste repositório (telas em `app/src/routes/`, dados em `api/openapi/`, visual em
 `app/src/theme.css` e `branding/`).
 
@@ -20,8 +20,8 @@ pede chaves próprias (Anthropic / OpenAI) nas variáveis de ambiente.
 ele terminar e você testar, cole as **Etapas 2 a 6**, uma por vez, no mesmo projeto. Use o
 [mapa da estrutura](06-mapa-da-estrutura.md) para conferir o que ele entregou em cada etapa.
 
-**Licença.** O OpenBot é MIT: pode copiar, mudar e vender. Mantenha o aviso de copyright da
-CopilotKit no arquivo LICENSE do projeto novo.
+**Licença.** Copie o arquivo LICENSE deste repositório para o projeto novo, sem mudar o aviso de
+copyright que já está nele.
 
 ---
 
@@ -319,7 +319,7 @@ publicar com Neon e Vercel.
 
 ### O que fica de fora do Emergent (fase 2)
 
-O OpenBot original também tem coisas que não cabem na Vercel. Ficam para depois:
+A estrutura deste repositório também tem partes que não cabem na Vercel. Ficam para depois:
 
 - **Computador e navegador do Bot** (o Bot usando um navegador de verdade, telas `browser` e
   `computer`): precisa de máquina própria ou de um serviço como Browserbase.
