@@ -17,7 +17,8 @@ funciona dentro do Emergent e para de funcionar quando você exporta para o GitH
 pede chaves próprias (Anthropic / OpenAI) nas variáveis de ambiente.
 
 **Como colar.** O Emergent trabalha melhor por etapas. Cole o **Prompt principal** primeiro. Quando
-ele terminar e você testar, cole as **Etapas 2 a 6**, uma por vez, no mesmo projeto.
+ele terminar e você testar, cole as **Etapas 2 a 6**, uma por vez, no mesmo projeto. Use o
+[mapa da estrutura](06-mapa-da-estrutura.md) para conferir o que ele entregou em cada etapa.
 
 **Licença.** O OpenBot é MIT: pode copiar, mudar e vender. Mantenha o aviso de copyright da
 CopilotKit no arquivo LICENSE do projeto novo.

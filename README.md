@@ -37,6 +37,7 @@ em [`docs/pollo-os/01-servidor-prompts.md`](docs/pollo-os/01-servidor-prompts.md
 - [Apps da Pollo como ferramentas dos Bots](docs/pollo-os/02-apps-prompts.md)
 - [Identidade visual e Bots](docs/pollo-os/03-identidade-prompts.md)
 - [**Prompt completo para o Emergent**](docs/pollo-os/04-emergent-prompt.md) (app inteiro, em 6 etapas)
+- [Mapa da estrutura](docs/pollo-os/06-mapa-da-estrutura.md) (pastas, telas, rotas e tabelas)
 - [Publicar: GitHub → Neon → Vercel](docs/pollo-os/05-deploy-github-neon-vercel.md)
 
 ## Origem e licença
