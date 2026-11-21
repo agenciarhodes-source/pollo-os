@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+/* Cores provisórias da Pollo. O visual definitivo vem da nova referência. */
+:root {
+  --background: #faf9f6;
+  --foreground: #2b201b;
+  --muted: #5f534c;
+  --brand: #ca6e23;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1c1613;
+    --foreground: #f3ece4;
+    --muted: #b3a69c;
+    --brand: #e08a45;
+  }
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --font-sans: var(--font-sans);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
