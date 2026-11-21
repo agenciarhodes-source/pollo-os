@@ -16,6 +16,10 @@ Next.js com PostgreSQL via Drizzle, porque vai rodar na Vercel com banco Neon."*
 funciona dentro do Emergent e para de funcionar quando você exporta para o GitHub. O prompt já
 pede chaves próprias (Anthropic / OpenAI) nas variáveis de ambiente.
 
+**Front primeiro.** Para construir o visual antes, use o
+[prompt do front com Astryx](07-front-visual-astryx.md). Depois dele, nas etapas abaixo, ignore o
+bloco "IDENTIDADE VISUAL" e troque "shadcn/ui" por "os componentes Astryx que já estão no projeto".
+
 **Como colar.** O Emergent trabalha melhor por etapas. Cole o **Prompt principal** primeiro. Quando
 ele terminar e você testar, cole as **Etapas 2 a 6**, uma por vez, no mesmo projeto. Use o
 [mapa da estrutura](06-mapa-da-estrutura.md) para conferir o que ele entregou em cada etapa.
