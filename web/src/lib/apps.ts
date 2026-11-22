@@ -4,14 +4,12 @@ import { useMemo, useSyncExternalStore } from "react";
 import {
   Calendar,
   ChartNoAxesCombined,
-  ClipboardList,
   FileText,
-  Handshake,
   HardDrive,
   Hash,
+  Layers,
   Mail,
   MessageCircle,
-  Radar,
   type LucideIcon,
 } from "lucide-react";
 
@@ -27,75 +25,58 @@ export type PolloApp = {
   from: string;
   to: string;
   status: AppStatus;
+  /** Os módulos que vivem dentro do app. */
+  includes: string[];
   /** O que um agente faz dentro do app. approval = pede a sua aprovação antes. */
   abilities: { text: string; approval?: boolean }[];
 };
 
-/** Os apps da Pollo: os sistemas que o Pollo OS reúne. */
+/**
+ * Os apps da Pollo: os sistemas que o Pollo OS reúne. São dois, e cada um
+ * inclui módulos: o CRM de vendas vive dentro do FlipForm e o Painel de
+ * Mercado dentro do Flip Intelligence. Cores oficiais: FlipForm #2F6FB8,
+ * Flip Intelligence #2E8A68.
+ */
 export const POLLO_APPS: PolloApp[] = [
   {
     id: "flipform",
-    name: "Flipform",
-    tagline: "Formulários inteligentes",
+    name: "FlipForm",
+    tagline: "Operação comercial e relacionamento",
     description:
-      "Crie formulários, pesquisas e quizzes em minutos e receba as respostas já organizadas, prontas para decidir.",
-    icon: ClipboardList,
-    from: "#F7AE6B",
-    to: "#CA6E23",
+      "Leads, atendimento e WhatsApp, funil de vendas, tarefas e agenda, com o CRM de vendas integrado ao ERP. Tudo o que a equipe comercial faz, num lugar só.",
+    icon: Layers,
+    from: "#7FAEE6",
+    to: "#2F6FB8",
     status: "disponivel",
+    includes: ["CRM de vendas", "Formulários", "Atendimento e WhatsApp", "Funil e agenda", "Integração com o ERP"],
     abilities: [
+      { text: "Registrar leads e conversas com clientes" },
+      { text: "Sugerir respostas no atendimento para a equipe revisar" },
       { text: "Criar um formulário a partir de uma conversa" },
-      { text: "Resumir as respostas e apontar o que chama atenção" },
-      { text: "Avisar quando chegar uma resposta nova" },
-      { text: "Enviar o link do formulário para os seus contatos", approval: true },
+      { text: "Consultar pedidos e estoque no ERP" },
+      { text: "Lembrar de quem está esperando retorno" },
+      { text: "Mudar a etapa de uma venda no funil", approval: true },
+      { text: "Enviar uma mensagem para um cliente", approval: true },
     ],
   },
   {
     id: "flip-intelligence",
     name: "Flip Intelligence",
-    tagline: "Inteligência de negócios",
+    tagline: "Análise e inteligência de negócios",
     description:
-      "Os números da empresa em painéis claros: vendas, metas e resultados, atualizados sem planilha.",
+      "Os indicadores da empresa em painéis claros e o Painel de Mercado, com preços, concorrentes e tendências do setor. Os números de dentro e de fora, lado a lado.",
     icon: ChartNoAxesCombined,
-    from: "#8CC0FF",
-    to: "#3478E0",
+    from: "#6FCBA5",
+    to: "#2E8A68",
     status: "disponivel",
+    includes: ["Indicadores e painéis", "Painel de Mercado", "Relatórios", "Alertas"],
     abilities: [
       { text: "Ler os painéis e explicar o que mudou" },
       { text: "Montar o relatório da semana" },
       { text: "Alertar quando um número sair do normal" },
-      { text: "Compartilhar um painel com outra pessoa", approval: true },
-    ],
-  },
-  {
-    id: "mercado",
-    name: "Painel de Mercado",
-    tagline: "Inteligência de mercado",
-    description: "Preços, concorrentes e tendências do seu setor, acompanhados de perto e num lugar só.",
-    icon: Radar,
-    from: "#7FE3B9",
-    to: "#22A774",
-    status: "em-breve",
-    abilities: [
-      { text: "Acompanhar os concorrentes que você escolher" },
-      { text: "Avisar quando um preço do mercado mudar" },
+      { text: "Acompanhar concorrentes e preços no Painel de Mercado" },
       { text: "Mandar um resumo semanal do setor" },
-    ],
-  },
-  {
-    id: "crm-erp",
-    name: "CRM de Vendas",
-    tagline: "Vendas integradas ao ERP",
-    description: "Clientes, funil e pedidos conversando com o seu ERP, sem digitar a mesma coisa duas vezes.",
-    icon: Handshake,
-    from: "#C6ADFF",
-    to: "#8A5CE6",
-    status: "em-breve",
-    abilities: [
-      { text: "Registrar contatos e conversas com clientes" },
-      { text: "Consultar pedidos e estoque no ERP" },
-      { text: "Lembrar de quem está esperando retorno" },
-      { text: "Mudar a etapa de uma venda no funil", approval: true },
+      { text: "Compartilhar um painel com outra pessoa", approval: true },
     ],
   },
 ];

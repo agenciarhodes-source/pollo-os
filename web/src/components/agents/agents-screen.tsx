@@ -42,21 +42,21 @@ const SUGGESTIONS: (Draft & { blurb: string })[] = [
   },
   {
     name: "Analista de dados",
-    blurb: "Lê os painéis do Flip Intelligence e explica o que mudou.",
-    purpose: "Acompanhar os números do Flip Intelligence e me avisar do que mudou e por quê.",
+    blurb: "Lê os painéis do Flip Intelligence e o Painel de Mercado e explica o que mudou.",
+    purpose: "Acompanhar os números do Flip Intelligence e do Painel de Mercado e me avisar do que mudou e por quê.",
     model: "avancado",
     shape: "hexagono",
-    color: "azul",
+    color: "verde",
     face: "olhos",
     mood: "calmo",
   },
   {
-    name: "Formulários",
-    blurb: "Cria formulários no Flipform e resume as respostas.",
-    purpose: "Criar formulários no Flipform e me entregar um resumo das respostas.",
+    name: "Vendas",
+    blurb: "Cuida dos leads e do funil no FlipForm e lembra quem espera retorno.",
+    purpose: "Registrar leads e conversas no FlipForm, acompanhar o funil e me lembrar de quem está esperando retorno.",
     model: "equilibrado",
     shape: "quadrado",
-    color: "laranja",
+    color: "azul",
     face: "piscada",
     mood: "pulando",
   },
@@ -264,7 +264,7 @@ export function AgentsScreen() {
             Seus apps Pollo
           </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted">
-            Flipform, Flip Intelligence e os outros apps. Escolha onde cada agente pode trabalhar.
+            FlipForm e Flip Intelligence. Escolha onde cada agente pode trabalhar.
           </p>
         </Link>
       </aside>

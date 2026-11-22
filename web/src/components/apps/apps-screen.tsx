@@ -26,6 +26,23 @@ function AppIcon({ app, size = 64 }: { app: PolloApp; size?: number }) {
   );
 }
 
+/** Os módulos que vivem dentro do app, como etiquetas na cor dele. */
+function Modules({ app }: { app: PolloApp }) {
+  return (
+    <span className="flex flex-wrap gap-1.5">
+      {app.includes.map((m) => (
+        <span
+          key={m}
+          className="rounded-full px-2.5 py-1 text-xs font-medium"
+          style={{ color: app.to, background: `${app.to}14`, boxShadow: `inset 0 0 0 1px ${app.to}33` }}
+        >
+          {m}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function StatusBadge({ app }: { app: PolloApp }) {
   return app.status === "disponivel" ? (
     <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-medium text-emerald-700">
@@ -103,7 +120,10 @@ function AppPanel({
         </header>
 
         <div className="flex flex-col gap-7 px-6 pb-6">
-          <p className="leading-relaxed text-foreground/85">{app.description}</p>
+          <div className="flex flex-col gap-3">
+            <p className="leading-relaxed text-foreground/85">{app.description}</p>
+            <Modules app={app} />
+          </div>
 
           <div>
             <button
@@ -257,6 +277,7 @@ export function AppsScreen() {
                       </span>
                     </span>
                     <span className="text-sm leading-relaxed text-foreground/80">{app.description}</span>
+                    <Modules app={app} />
                     <span className="mt-auto flex items-center justify-between border-t border-line pt-4">
                       <AgentStack agents={agentsIn(app.id)} />
                       <span className="text-sm font-medium text-brand opacity-80 transition group-hover:opacity-100">
