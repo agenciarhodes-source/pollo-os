@@ -37,11 +37,22 @@ body {
   display: inline-grid;
   place-items: center;
   flex: none;
+  /* Ritmo de cada jeito: respiração, pulso e piscada. */
+  --breathe: 2.8s;
+  --pulse: 2.8s;
+  --blink: 5.2s;
+}
+
+.pollo__mover {
+  display: block;
+  transform-origin: 50% 90%;
 }
 
 .pollo__body {
   position: relative;
+  display: block;
   overflow: visible;
+  transform-origin: 50% 80%;
   filter: drop-shadow(0 6px 14px color-mix(in srgb, var(--pollo-glow) 35%, transparent));
 }
 
@@ -51,12 +62,11 @@ body {
 }
 
 .pollo--alive .pollo__body {
-  animation: pollo-breathe 2.8s ease-in-out infinite;
-  transform-origin: 50% 70%;
+  animation: pollo-breathe var(--breathe) ease-in-out infinite;
 }
 
 .pollo--alive .pollo__face {
-  animation: pollo-blink 5.2s ease-in-out infinite;
+  animation: pollo-blink var(--blink) ease-in-out infinite;
 }
 
 /* O pulso: um halo da cor do Pollo que sai do corpo e some. */
@@ -66,19 +76,80 @@ body {
   border-radius: 9999px;
   background: var(--pollo-glow);
   opacity: 0;
-  animation: pollo-pulse 2.8s ease-out infinite;
+  animation: pollo-pulse var(--pulse) ease-out infinite;
 }
+
+/* ---- Os jeitos ---- */
+
+.pollo--calmo {
+  --breathe: 4.2s;
+  --pulse: 4.2s;
+  --blink: 7s;
+}
+
+.pollo--animado {
+  --breathe: 2.2s;
+  --pulse: 2.2s;
+  --blink: 3.8s;
+}
+
+.pollo--pulando .pollo__mover {
+  animation: pollo-hop 1.3s cubic-bezier(0.3, 0, 0.3, 1) infinite;
+}
+.pollo--pulando .pollo__body {
+  animation: pollo-squash 1.3s ease-in-out infinite;
+}
+.pollo--pulando {
+  --pulse: 2.6s;
+}
+
+.pollo--balancando .pollo__mover {
+  animation: pollo-sway 2.4s ease-in-out infinite;
+}
+
+.pollo--dormindo {
+  --breathe: 5s;
+}
+.pollo--dormindo .pollo__face {
+  animation: none;
+}
+.pollo--dormindo .pollo__body {
+  animation-name: pollo-sleep;
+}
+
+.pollo__zzz {
+  position: absolute;
+  top: 2%;
+  right: 6%;
+  font-weight: 700;
+  font-size: 0.9em;
+  color: var(--pollo-glow);
+  opacity: 0;
+  animation: pollo-zzz 3s ease-out infinite;
+}
+
+/* ---- Movimentos ---- */
 
 @keyframes pollo-breathe {
   0%,
   100% {
-    transform: scale(1, 1) translateY(0);
+    transform: scale(1, 1);
   }
   45% {
-    transform: scale(1.05, 0.97) translateY(1%);
+    transform: scale(1.05, 0.96);
   }
   60% {
-    transform: scale(0.98, 1.04) translateY(-2%);
+    transform: scale(0.98, 1.04);
+  }
+}
+
+@keyframes pollo-sleep {
+  0%,
+  100% {
+    transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(1.06, 0.95);
   }
 }
 
@@ -105,20 +176,83 @@ body {
   }
 }
 
+@keyframes pollo-hop {
+  0%,
+  20%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-22%);
+  }
+  80% {
+    transform: translateY(0);
+  }
+}
+
+@keyframes pollo-squash {
+  0%,
+  100% {
+    transform: scale(1.12, 0.88);
+  }
+  20% {
+    transform: scale(0.92, 1.1);
+  }
+  50% {
+    transform: scale(1, 1);
+  }
+  80% {
+    transform: scale(1.12, 0.88);
+  }
+}
+
+@keyframes pollo-sway {
+  0%,
+  100% {
+    transform: rotate(-7deg);
+  }
+  50% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes pollo-zzz {
+  0% {
+    transform: translate(0, 0) scale(0.7);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(40%, -90%) scale(1.2);
+    opacity: 0;
+  }
+}
+
 /* Ao passar o mouse, o Pollo fica mais animado; ao clicar, ele se amassa. */
-.pollo--alive:hover .pollo__body {
-  animation-duration: 1.2s;
+.pollo--alive:hover {
+  --breathe: 1.2s;
 }
 
 .pollo--alive:active .pollo__body {
-  transform: scale(0.92, 1.06);
+  transform: scale(0.9, 1.08);
   animation-play-state: paused;
 }
 
+/*
+ * Para quem pede menos movimento no sistema: o Pollo continua vivo, mas só
+ * respira devagar e pisca. Pular, balançar, a onda de luz e o "z" ficam parados.
+ */
 @media (prefers-reduced-motion: reduce) {
-  .pollo--alive .pollo__body,
-  .pollo--alive .pollo__face,
-  .pollo__halo {
+  .pollo--alive .pollo__mover,
+  .pollo__halo,
+  .pollo__zzz {
     animation: none;
+  }
+
+  .pollo--alive .pollo__body,
+  .pollo--alive:hover .pollo__body {
+    animation: pollo-sleep 5s ease-in-out infinite;
   }
 }
