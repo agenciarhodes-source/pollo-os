@@ -1,6 +1,3 @@
-"use client";
-
-import { useMemo, useSyncExternalStore } from "react";
 import {
   Calendar,
   ChartNoAxesCombined,
@@ -90,49 +87,3 @@ export const CONNECTIONS: { id: string; name: string; icon: LucideIcon }[] = [
   { id: "slack", name: "Slack", icon: Hash },
   { id: "notion", name: "Notion", icon: FileText },
 ];
-
-/*
- * Quais agentes podem trabalhar em cada app: { [appId]: agentIds[] }.
- * Guardado neste navegador até o servidor existir.
- */
-const KEY = "pollo-os:apps-acesso";
-const CHANGED = "pollo-os:apps-acesso-mudou";
-let memory = "{}";
-
-function read(): string {
-  try {
-    return localStorage.getItem(KEY) ?? "{}";
-  } catch {
-    return memory;
-  }
-}
-
-function subscribe(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(CHANGED, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(CHANGED, onChange);
-  };
-}
-
-export function useAppAccess(): Record<string, string[]> {
-  const raw = useSyncExternalStore(subscribe, read, () => "{}");
-  return useMemo(() => {
-    try {
-      return JSON.parse(raw) as Record<string, string[]>;
-    } catch {
-      return {};
-    }
-  }, [raw]);
-}
-
-export function setAppAccess(access: Record<string, string[]>) {
-  memory = JSON.stringify(access);
-  try {
-    localStorage.setItem(KEY, memory);
-  } catch {
-    // Fica só na memória.
-  }
-  window.dispatchEvent(new Event(CHANGED));
-}

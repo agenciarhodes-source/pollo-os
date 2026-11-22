@@ -7,6 +7,7 @@ import { MoreHorizontal, X } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
 import { ChatPanel, PolloButton } from "@/components/chat/chat-panel";
 import { ChatProvider } from "@/components/chat/chat-provider";
+import { AccountLinks, AccountMenu } from "./account-menu";
 import { MORE_NAV, PRIMARY_NAV, isActive, type NavItem } from "@/lib/navigation";
 
 function RailLink({ item, active }: { item: NavItem; active: boolean }) {
@@ -110,6 +111,9 @@ function MoreMenu({
           </button>
         </div>
         {list}
+        <div className="mt-2 border-t border-line pt-2">
+          <AccountLinks onDone={onClose} />
+        </div>
       </div>
     </div>
   );
@@ -162,13 +166,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <MoreMenu items={MORE_NAV} pathname={pathname} onClose={closeMore} id={moreId} variant="popover" />
           )}
         </div>
-        <span
-          role="img"
-          aria-label="Sua conta"
-          className="mt-2 flex size-8 items-center justify-center rounded-lg bg-brand text-xs font-semibold text-brand-foreground"
-        >
-          A
-        </span>
+        <AccountMenu />
       </nav>
 
       <div className="flex min-w-0 flex-1 pb-16 md:p-2 md:pb-2 md:pl-0">{children}</div>

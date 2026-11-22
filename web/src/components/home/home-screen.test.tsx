@@ -1,13 +1,19 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ChatProvider } from "@/components/chat/chat-provider";
+import { fakeAuthClient, installFakeApi, renderWithData } from "@/test/fake-api";
 import { HomeScreen } from "./home-screen";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: () => "/", useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }) }));
+vi.mock("@/lib/auth-client", async () => ({ authClient: (await import("@/test/fake-api")).fakeAuthClient }));
+
+beforeEach(() => {
+  installFakeApi();
+});
 
 function renderHome() {
-  return render(
+  return renderWithData(
     <ChatProvider>
       <HomeScreen />
     </ChatProvider>,
@@ -19,6 +25,11 @@ describe("Home", () => {
     renderHome();
     expect(screen.getByRole("heading", { level: 1, name: "O que vamos resolver hoje?" })).toBeInTheDocument();
     expect(screen.getAllByRole("img", { name: "Pollo CEO" }).length).toBeGreaterThan(0);
+  });
+
+  it("mostra a empresa ativa", () => {
+    renderHome();
+    expect(screen.getByText(fakeAuthClient.useActiveOrganization().data.name)).toBeInTheDocument();
   });
 
   it("deixa claro que é uma demonstração", () => {

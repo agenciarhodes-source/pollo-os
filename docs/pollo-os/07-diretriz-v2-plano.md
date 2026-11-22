@@ -111,3 +111,23 @@ Rotas mínimas (B e C): `GET/POST /api/organizations/:org/agents`, `POST /api/or
 | Usuário achar que a IA responde de verdade | Aviso "Em demonstração" e botões desabilitados com o motivo | — |
 | Mudança grande de navegação | PR único, em rascunho, com prévia da Vercel antes do merge | Não fazer merge, ou reverter o commit do merge |
 | Imagens do servidor na tag móvel `main` | Fora do PR A. Decidir no PR D entre fixar a versão ou substituir as imagens | — |
+
+## Estado do PR B (backend multiempresa) — sem IA, por decisão do produto
+
+Branch `pr-b/backend-multiempresa`, em cima do PR A.
+
+| Item | Situação |
+| --- | --- |
+| Banco no Neon (`pollo-os`), 12 tabelas, migração `web/drizzle/0000_inicial.sql` | Feito e aplicado |
+| Login com e-mail e senha (Better Auth) e empresas (plugin organization: dono, admin, membro) | Feito |
+| Proteção das telas (`web/src/proxy.ts` + checagem no servidor em cada página) | Feito |
+| API de agentes, acessos aos apps e conversas, sempre filtrada pela empresa da sessão (`web/src/lib/server/`) | Feito |
+| `localStorage` deixa de ser autoridade; importação dos agentes antigos do navegador | Feito |
+| Conversas salvas no servidor, por empresa, pessoa e agente; respostas marcadas como demonstração | Feito |
+| Tabela de consumo (`usage_events`) | Criada, vazia até a IA ser ligada |
+| Modelo de IA, streaming e custo real | **Fora deste PR**: a IA ainda não foi escolhida |
+| Testes de isolamento A/B (PGlite, mesmo SQL do Neon) | 13 testes: listar, alterar, apagar, acessos e conversas entre empresas; 401/409/403 na entrada da API |
+
+Variáveis necessárias na Vercel (Production e Preview): `DATABASE_URL`, `DATABASE_URL_UNPOOLED`,
+`BETTER_AUTH_SECRET`. `BETTER_AUTH_URL` é opcional: sem ela, o app usa o endereço da própria
+publicação da Vercel. O modelo está em `web/.env.example`.
