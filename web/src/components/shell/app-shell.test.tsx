@@ -1,13 +1,15 @@
-import { render, screen, within } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { installFakeApi, renderWithData } from "@/test/fake-api";
 import { AppShellWithChat } from "./app-shell";
 
 const nav = vi.hoisted(() => ({ path: "/" }));
-vi.mock("next/navigation", () => ({ usePathname: () => nav.path }));
+vi.mock("next/navigation", () => ({ usePathname: () => nav.path, useRouter: () => ({ replace: vi.fn(), refresh: vi.fn() }) }));
+vi.mock("@/lib/auth-client", async () => ({ authClient: (await import("@/test/fake-api")).fakeAuthClient }));
 
 function renderShell() {
-  return render(
+  return renderWithData(
     <AppShellWithChat>
       <p>conteúdo</p>
     </AppShellWithChat>,
@@ -17,6 +19,19 @@ function renderShell() {
 describe("moldura do app", () => {
   beforeEach(() => {
     nav.path = "/";
+    installFakeApi();
+  });
+
+  it("mostra a conta com as iniciais e o menu dela", async () => {
+    const user = userEvent.setup();
+    renderShell();
+    const account = screen.getByRole("button", { name: "Sua conta: Ana Souza" });
+    expect(account).toHaveTextContent("AS");
+    await user.click(account);
+    const menu = screen.getByRole("region", { name: "Sua conta" });
+    expect(within(menu).getByText("Empresa: Padaria Pollo")).toBeInTheDocument();
+    expect(within(menu).getByRole("link", { name: /Trocar de empresa/ })).toHaveAttribute("href", "/empresa");
+    expect(within(menu).getByRole("button", { name: /Sair/ })).toBeInTheDocument();
   });
 
   it("tem o menu principal com os seis destinos, todos com nome", () => {

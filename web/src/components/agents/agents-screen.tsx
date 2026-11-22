@@ -10,7 +10,9 @@ import {
   Pollo,
   SHAPES,
 } from "@/components/pollo/pollo";
-import { saveAgents, toDraft, useAgents, type Agent, type Draft } from "@/lib/agents";
+import { toDraft, type Agent, type Draft } from "@/lib/agents";
+import { createAgent, deleteAgent, updateAgent, useAgents } from "@/lib/client/data";
+import { LegacyImport } from "./legacy-import";
 import { useChat } from "@/components/chat/chat-provider";
 
 const MODELS = [
@@ -131,7 +133,8 @@ function PickButton({
 }
 
 export function AgentsScreen() {
-  const agents = useAgents();
+  const { agents, isLoading, error: loadError } = useAgents();
+  const [saving, setSaving] = useState(false);
   const chat = useChat();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft>(EMPTY);
@@ -166,32 +169,43 @@ export function AgentsScreen() {
     setNameError(false);
   }
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     const name = draft.name.trim();
     if (!name) {
       setNameError(true);
       return;
     }
-    if (selected) {
-      const next = agents.map((a) => (a.id === selected.id ? { ...a, ...draft, name } : a));
-      saveAgents(next);
-      setNotice(`${name} foi atualizado.`);
-    } else {
-      const agent: Agent = { ...draft, name, id: crypto.randomUUID() };
-      const next = [agent, ...agents];
-      saveAgents(next);
-      setSelectedId(agent.id);
-      setNotice(`${name} chegou. Diga oi!`);
+    setSaving(true);
+    try {
+      if (selected) {
+        await updateAgent(selected.id, { ...draft, name });
+        setNotice(`${name} foi atualizado.`);
+      } else {
+        const agent = await createAgent({ ...draft, name });
+        setSelectedId(agent.id);
+        setNotice(`${name} chegou. Diga oi!`);
+      }
+    } catch (err) {
+      setNotice(err instanceof Error ? err.message : "Não foi possível salvar.");
+    } finally {
+      setSaving(false);
     }
   }
 
-  function remove() {
+  async function remove() {
     if (!selected) return;
-    const next = agents.filter((a) => a.id !== selected.id);
-    saveAgents(next);
-    setNotice(`${selected.name} foi removido.`);
-    startNew();
+    if (!window.confirm(`Remover ${selected.name}? As conversas com ele também serão apagadas.`)) return;
+    setSaving(true);
+    try {
+      await deleteAgent(selected.id);
+      setNotice(`${selected.name} foi removido.`);
+      startNew();
+    } catch (err) {
+      setNotice(err instanceof Error ? err.message : "Não foi possível remover.");
+    } finally {
+      setSaving(false);
+    }
   }
 
   return (
@@ -225,8 +239,16 @@ export function AgentsScreen() {
           </button>
         </div>
 
-        <ul className="flex flex-1 flex-col gap-1 overflow-y-auto">
-          {!selected && (
+        <ul className="flex flex-1 flex-col gap-1 overflow-y-auto" aria-busy={isLoading}>
+          {loadError && (
+            <li role="alert" className="rounded-2xl bg-red-50 px-3 py-2.5 text-sm text-red-700 ring-1 ring-red-200">
+              {loadError.message}
+            </li>
+          )}
+          {isLoading && (
+            <li className="px-3 py-2.5 text-sm text-muted">Carregando agentes…</li>
+          )}
+          {!selected && !isLoading && (
             <li>
               <div className="flex items-center gap-3 rounded-2xl bg-card px-3 py-2.5 ring-1 ring-line">
                 <Pollo {...draft} size={40} />
@@ -313,6 +335,7 @@ export function AgentsScreen() {
             </div>
           )}
 
+          <LegacyImport hasAgents={agents.length > 0} onImported={(n) => setNotice(n === 1 ? "1 agente importado." : `${n} agentes importados.`)} />
           <form onSubmit={submit} className="mx-auto flex w-full max-w-lg flex-col gap-6 px-4 pt-10 pb-8">
             <div className="flex flex-col items-center gap-5">
               <Pollo {...draft} size={112} />
@@ -412,16 +435,18 @@ export function AgentsScreen() {
                 <button
                   type="button"
                   onClick={remove}
-                  className="h-11 rounded-xl px-5 text-sm text-muted ring-1 ring-line hover:text-foreground"
+                  disabled={saving}
+                  className="h-11 rounded-xl px-5 disabled:opacity-50 text-sm text-muted ring-1 ring-line hover:text-foreground"
                 >
                   Remover
                 </button>
               )}
               <button
                 type="submit"
-                className="h-11 rounded-xl bg-foreground px-6 text-sm font-medium text-background transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+                disabled={saving}
+                className="h-11 rounded-xl bg-foreground px-6 disabled:opacity-60 text-sm font-medium text-background transition hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
               >
-                {selected ? "Salvar alterações" : "Criar agente"}
+                {saving ? "Salvando…" : selected ? "Salvar alterações" : "Criar agente"}
               </button>
             </div>
           </form>

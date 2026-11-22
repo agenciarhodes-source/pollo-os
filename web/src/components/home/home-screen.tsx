@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUp, Bot, CalendarDays, Gauge, Info, LayoutGrid, Mic, Paperclip, PhoneCall } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
-import { useChat } from "@/components/chat/chat-provider";
+import { authClient } from "@/lib/auth-client";
+import { useMessages, useSendMessage } from "@/lib/client/data";
 import { POLLO_CEO } from "@/lib/agents";
 
 /**
@@ -34,8 +35,10 @@ function DemoNotice() {
 }
 
 export function HomeScreen() {
-  const { threadOf, sendTo } = useChat();
-  const { messages, typing } = threadOf(POLLO_CEO.id);
+  const { messages: saved } = useMessages(POLLO_CEO.id);
+  const { send, sending: typing, error: sendError } = useSendMessage(POLLO_CEO.id);
+  const { data: activeOrg } = authClient.useActiveOrganization();
+  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text }));
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const started = messages.length > 0;
@@ -46,7 +49,7 @@ export function HomeScreen() {
 
   function submit() {
     if (!text.trim()) return;
-    sendTo(POLLO_CEO.id, text);
+    void send(text);
     setText("");
   }
 
@@ -75,6 +78,11 @@ export function HomeScreen() {
         placeholder="Pergunte, peça uma análise ou combine o próximo passo…"
         className="max-h-48 w-full resize-none bg-transparent px-3 py-2.5 text-[16px] leading-relaxed outline-none placeholder:text-muted"
       />
+      {sendError && (
+        <p role="alert" className="px-3 pb-1 text-sm text-red-600">
+          {sendError}
+        </p>
+      )}
       <div className="flex items-center gap-1 px-1">
         <button
           type="button"
@@ -115,7 +123,7 @@ export function HomeScreen() {
           <span className="text-muted" aria-hidden>
             ·
           </span>
-          <span className="truncate text-muted">Empresa de demonstração</span>
+          <span className="truncate text-muted">{activeOrg?.name ?? "…"}</span>
         </div>
         <span className="flex-none rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
           Em demonstração
