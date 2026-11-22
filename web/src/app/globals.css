@@ -5,14 +5,15 @@
  * de trabalho e os cartões. Claro e escuro seguem o sistema.
  */
 :root {
-  --background: #faf9f6;
-  --panel: #f3efe8;
+  --background: #ffffff;
+  --panel: #faf8f5;
   --card: #ffffff;
   --field: #ffffff;
-  --border: #e6dfd4;
+  --border: #ebe5dd;
   --foreground: #2b201b;
-  --muted: #6b5f57;
-  --brand: #ca6e23;
+  --muted: #6e625a;
+  /* Marrom café: a cor da marca na interface. */
+  --brand: #5c3a21;
   --brand-foreground: #ffffff;
 }
 
@@ -25,7 +26,8 @@
     --border: #342a24;
     --foreground: #f3ece4;
     --muted: #a89a90;
-    --brand: #e08a45;
+    /* Café com leite: o marrom que aparece bem sobre o escuro. */
+    --brand: #c9a07c;
     --brand-foreground: #1a1512;
   }
 }

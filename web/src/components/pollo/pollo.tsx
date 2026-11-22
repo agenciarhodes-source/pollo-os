@@ -21,6 +21,7 @@ export const SHAPES = [
 
 /** light/base/dark: o degradê do corpo. ink: a cor do rosto, para ter contraste em cada cor. */
 export const COLORS = [
+  { id: "marrom", label: "Marrom", light: "#C08D69", base: "#7A4B2C", dark: "#43260F", ink: "#FFFFFF" },
   { id: "laranja", label: "Laranja Pollo", light: "#F7AE6B", base: "#CA6E23", dark: "#8F470F", ink: "#FFFFFF" },
   { id: "amarelo", label: "Amarelo", light: "#FFE58A", base: "#F2B620", dark: "#B07D06", ink: "#3A2A05" },
   { id: "vermelho", label: "Vermelho", light: "#FF9A8B", base: "#E0483A", dark: "#A3261B", ink: "#FFFFFF" },
@@ -243,7 +244,7 @@ function Face({ face, cy, ink }: { face: FaceId; cy: number; ink: string }) {
 
 export function Pollo({
   shape = "bola",
-  color = "laranja",
+  color = "marrom",
   face = "olhos",
   mood = "animado",
   size = 96,

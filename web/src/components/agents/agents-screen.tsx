@@ -101,7 +101,7 @@ const EMPTY: Draft = {
   purpose: "",
   model: "equilibrado",
   shape: "quadrado",
-  color: "laranja",
+  color: "marrom",
   face: "olhos",
   mood: "animado",
 };

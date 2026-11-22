@@ -68,7 +68,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         className="hidden w-16 flex-none flex-col items-center gap-1 py-3 md:flex"
       >
         <Link href="/" aria-label="Pollo OS, início" className="mb-3 flex size-11 items-center justify-center">
-          <Pollo shape="quadrado" color="laranja" face="olhos" mood="calmo" size={30} />
+          <Pollo shape="quadrado" color="marrom" face="olhos" mood="calmo" size={30} />
         </Link>
         {MAIN.map((item) => (
           <RailLink key={item.href} {...item} active={isActive(item.href)} />

@@ -61,7 +61,7 @@ const FAMILY = Array.from({ length: 18 }, (_, i) => ({
 
 export function PolloStudio() {
   const [shape, setShape] = useState<ShapeId>("bola");
-  const [color, setColor] = useState<ColorId>("laranja");
+  const [color, setColor] = useState<ColorId>("marrom");
   const [face, setFace] = useState<FaceId>("olhos");
   const [mood, setMood] = useState<MoodId>("animado");
 
