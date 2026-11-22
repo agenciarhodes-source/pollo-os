@@ -165,7 +165,7 @@ function AppPanel({
             <p className="mb-3 text-xs text-muted">Escolha quem pode trabalhar no {app.name}.</p>
             {agents.length === 0 ? (
               <Link
-                href="/"
+                href="/agentes"
                 className="flex items-center gap-3 rounded-2xl p-3 ring-1 ring-line ring-dashed hover:ring-brand"
               >
                 <span className="flex size-10 items-center justify-center rounded-xl bg-panel text-muted">

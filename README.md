@@ -26,6 +26,7 @@ repositório hoje é a base que não depende do visual.
 
 ## Documentos
 
+- [**Plano da diretriz v2**](docs/pollo-os/07-diretriz-v2-plano.md) (Home, Agenda, reuniões com IA: diagnóstico e PRs A a E)
 - [Servidor do Pollo OS](docs/pollo-os/01-servidor-prompts.md)
 - [Apps da Pollo como ferramentas dos Bots](docs/pollo-os/02-apps-prompts.md)
 - [Mapa do backend](docs/pollo-os/06-mapa-da-estrutura.md) (rotas, tabelas e variáveis)
