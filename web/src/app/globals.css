@@ -1,35 +1,27 @@
 @import "tailwindcss";
 
 /*
- * Cores da Pollo. Três superfícies: a moldura (menu de ícones e lista), a área
- * de trabalho e os cartões. Claro e escuro seguem o sistema.
+ * O Pollo OS é sempre claro, mesmo com o sistema no modo escuro.
+ * O "dark:" do Tailwind só vale com a classe .dark, que o app não usa.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Cores da Pollo. Três superfícies: a moldura (menu de ícones e lista) num
+ * areia bem claro, a área de trabalho em branco e os cartões em branco.
  */
 :root {
+  color-scheme: light;
   --background: #ffffff;
-  --panel: #faf8f5;
+  --panel: #f6f2ec;
   --card: #ffffff;
   --field: #ffffff;
-  --border: #ebe5dd;
+  --border: #ebe4da;
   --foreground: #2b201b;
   --muted: #6e625a;
   /* Laranja Pollo: a cor da marca na interface. */
   --brand: #ca6e23;
   --brand-foreground: #ffffff;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #1a1512;
-    --panel: #120e0c;
-    --card: #231c18;
-    --field: #231c18;
-    --border: #342a24;
-    --foreground: #f3ece4;
-    --muted: #a89a90;
-    /* Um laranja mais claro, que aparece bem sobre o escuro. */
-    --brand: #e08a45;
-    --brand-foreground: #1a1512;
-  }
 }
 
 @theme inline {

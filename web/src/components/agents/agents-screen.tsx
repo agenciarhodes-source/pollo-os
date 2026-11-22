@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { ChevronDown, Filter, LayoutGrid, MessageCircle, Plus, Search, X } from "lucide-react";
 import {
   COLORS,
@@ -257,15 +258,15 @@ export function AgentsScreen() {
           )}
         </ul>
 
-        <div className="rounded-2xl bg-card/70 p-4 ring-1 ring-line">
+        <Link href="/apps" className="rounded-2xl bg-card/70 p-4 ring-1 ring-line transition hover:ring-brand/50">
           <div className="flex items-center gap-2 text-sm font-medium">
             <LayoutGrid className="size-4 text-brand" strokeWidth={1.75} />
             Seus apps Pollo
           </div>
           <p className="mt-1.5 text-xs leading-relaxed text-muted">
-            Flipform e Flip Intelligence vão aparecer aqui, e os seus agentes poderão trabalhar neles.
+            Flipform, Flip Intelligence e os outros apps. Escolha onde cada agente pode trabalhar.
           </p>
-        </div>
+        </Link>
       </aside>
 
       {/* Área de trabalho */}

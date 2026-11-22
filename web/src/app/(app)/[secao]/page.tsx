@@ -4,7 +4,6 @@ import { Pollo } from "@/components/pollo/pollo";
 const SECTIONS: Record<string, { title: string; text: string }> = {
   rotinas: { title: "Rotinas", text: "Tarefas que os seus agentes fazem sozinhos, no horário que você escolher." },
   tarefas: { title: "Tarefas", text: "O que os agentes estão fazendo agora e o que espera a sua aprovação." },
-  apps: { title: "Apps Pollo", text: "Flipform, Flip Intelligence e os outros apps da Pollo, todos num lugar só." },
   ajuda: { title: "Ajuda", text: "Guias rápidos para tirar o melhor dos seus agentes." },
   configuracoes: { title: "Configurações", text: "Sua conta, sua empresa e as preferências do Pollo OS." },
 };
