@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
-import { POLLO, useAgents, type Agent } from "@/lib/agents";
+import { POLLO_CEO, useAgents, type Agent } from "@/lib/agents";
 
 export type Message = {
   id: string;
@@ -12,7 +12,7 @@ export type Message = {
 type ChatState = {
   isOpen: boolean;
   agent: Agent;
-  /** Os agentes com quem se pode conversar: os criados ou, sem nenhum, o Pollo. */
+  /** Os agentes com quem se pode conversar: o Pollo CEO primeiro, depois os criados. */
   agents: Agent[];
   messages: Message[];
   typing: boolean;
@@ -20,6 +20,9 @@ type ChatState = {
   close: () => void;
   switchTo: (agentId: string) => void;
   send: (text: string) => void;
+  /** A conversa de um agente qualquer, como a Home lê a do Pollo CEO sem abrir o painel. */
+  threadOf: (agentId: string) => { messages: Message[]; typing: boolean };
+  sendTo: (agentId: string, text: string) => void;
 };
 
 const ChatContext = createContext<ChatState | null>(null);
@@ -30,14 +33,12 @@ const ChatContext = createContext<ChatState | null>(null);
  */
 function replyFor(agent: Agent, text: string) {
   const asked = text.length > 80 ? `${text.slice(0, 80)}…` : text;
-  return `Anotei: “${asked}”. Ainda não estou ligado à inteligência artificial, então por enquanto só consigo conversar assim. Quando o servidor do Pollo OS estiver pronto, eu respondo de verdade${
-    agent.purpose ? " e cuido disso por você" : ""
-  }.`;
+  return `Em demonstração: recebi “${asked}”, mas ainda não estou ligado à inteligência artificial nem aos dados da sua empresa. Esta não é uma resposta real. Quando o servidor do Pollo OS estiver pronto, ${agent.name === POLLO_CEO.name ? "eu respondo" : `${agent.name} responde`} de verdade.`;
 }
 
 export function ChatProvider({ children }: { children: React.ReactNode }) {
   const saved = useAgents();
-  const agents = useMemo(() => (saved.length > 0 ? saved : [POLLO]), [saved]);
+  const agents = useMemo(() => [POLLO_CEO, ...saved], [saved]);
 
   const [isOpen, setOpen] = useState(false);
   const [agentId, setAgentId] = useState<string | null>(null);
@@ -55,11 +56,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   const close = useCallback(() => setOpen(false), []);
   const switchTo = useCallback((id: string) => setAgentId(id), []);
 
-  const send = useCallback(
-    (raw: string) => {
+  const sendTo = useCallback(
+    (toId: string, raw: string) => {
       const text = raw.trim();
-      if (!text) return;
-      const to = agent;
+      const to = agents.find((a) => a.id === toId);
+      if (!text || !to) return;
       setByAgent((m) => ({
         ...m,
         [to.id]: [...(m[to.id] ?? []), { id: crypto.randomUUID(), from: "voce", text }],
@@ -74,7 +75,13 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       }, 1100);
       timers.current.push(t);
     },
-    [agent],
+    [agents],
+  );
+
+  const send = useCallback((raw: string) => sendTo(agent.id, raw), [sendTo, agent.id]);
+  const threadOf = useCallback(
+    (id: string) => ({ messages: byAgent[id] ?? [], typing: typingFor === id }),
+    [byAgent, typingFor],
   );
 
   const value: ChatState = {
@@ -87,6 +94,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     close,
     switchTo,
     send,
+    threadOf,
+    sendTo,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

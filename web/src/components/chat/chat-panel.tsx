@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { ArrowUp, ChevronDown, X } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
 import { useChat } from "./chat-provider";
@@ -10,7 +11,9 @@ const STARTERS = ["O que você sabe fazer?", "Me ajude a organizar o meu dia", "
 /** O botão Pollo: a criatura viva no canto da tela que abre a conversa. */
 export function PolloButton() {
   const { isOpen, agent, open } = useChat();
-  if (isOpen) return null;
+  const pathname = usePathname();
+  // Na Home a conversa com o Pollo CEO já é o centro da tela.
+  if (isOpen || pathname === "/") return null;
 
   return (
     <button
@@ -84,8 +87,8 @@ export function ChatPanel() {
             <p className="truncate font-medium">{agent.name}</p>
           )}
           <p className="flex items-center gap-1.5 text-xs text-muted">
-            <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden />
-            {typing ? "digitando…" : "Disponível"}
+            <span className="size-1.5 rounded-full bg-amber-500" aria-hidden />
+            {typing ? "digitando…" : "Em demonstração, sem IA ligada"}
           </p>
         </div>
         <button

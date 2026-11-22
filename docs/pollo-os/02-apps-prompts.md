@@ -1,10 +1,15 @@
 # Pollo OS — prompts para os apps da Pollo
 
-Cada app da Pollo entra no Pollo OS de duas formas:
+Os apps da Pollo são dois: o **FlipForm** (operação comercial e relacionamento, com o CRM de
+vendas, formulários, atendimento, funil, agenda de vendas e integração com o ERP) e o **Flip
+Intelligence** (análise e inteligência de negócios, com indicadores, painéis e o Painel de
+Mercado).
 
-1. **Como ferramenta para os Bots**: um servidor MCP (Model Context Protocol). O Bot passa a
-   poder consultar e agir no app ("crie um formulário", "qual o ticket médio da semana?").
-2. **Como painel para as pessoas**: uma tela própria que o cliente abre dentro do Pollo OS.
+**O Pollo OS não é um CRM e não recria a interface desses apps.** Cada app entra no Pollo OS de
+uma forma só: **como conector para os agentes**, um servidor MCP (Model Context Protocol) com
+permissão. Primeiro só leitura; as ferramentas de escrita vêm depois, cada uma com autorização
+e, nas sensíveis, aprovação humana. Para operar o CRM ou ver uma análise a fundo, a pessoa abre
+o próprio app a partir do Pollo OS (link para o app de origem).
 
 Complete os trechos entre `[colchetes]` com o que cada app faz hoje antes de colar.
 
@@ -35,75 +40,57 @@ Regras:
 
 ---
 
-## Flipform
+## FlipForm
+
+O CRM de vendas, os formulários, o atendimento, o funil, a agenda de vendas e a integração com o
+ERP vivem no FlipForm. O conector expõe esses dados aos agentes; não cria telas no Pollo OS.
 
 ```
-Use o prompt-base de servidor MCP para o app "Flipform".
-O app faz: [ex.: cria formulários e coleta respostas de clientes].
-Ferramentas:
-- listar_formularios: devolve id, título, nº de respostas e data de criação.
-- criar_formulario: recebe título e lista de perguntas (texto, múltipla escolha, data, arquivo);
-  devolve o link público. Marcar como destrutiva.
-- respostas_do_formulario: recebe id e período; devolve as respostas em tabela.
-- resumo_do_formulario: recebe id; devolve contagens e médias por pergunta.
+Use o prompt-base de servidor MCP para o app "FlipForm".
+O app faz: operação comercial e relacionamento: leads, atendimento e WhatsApp, funil de vendas,
+tarefas e agenda, formulários e integração com o ERP do cliente.
+
+Fase 1, só leitura:
+- buscar_cliente(nome_ou_documento): dados do cliente e histórico de contatos.
+- funil_resumo(periodo, vendedor?): quantidade e valor por etapa, sem dados pessoais em massa.
+- leads_recentes(periodo, origem?): leads novos com origem e status.
+- tempo_de_resposta(periodo, origem?): tempo até o primeiro contato.
+- historico_de_compras(cliente_id, periodo): pedidos vindos do ERP.
+- estoque_do_produto(produto): estoque vindo do ERP.
+- listar_formularios / respostas_do_formulario(id, periodo) / resumo_do_formulario(id).
+
+Fase 2, escrita (cada ferramenta com "destructiveHint": true, autorização por empresa e
+aprovação humana no Pollo OS):
+- registrar_contato(cliente_id, resumo)
+- criar_tarefa(responsavel, titulo, prazo)
+- mover_oportunidade(id, etapa)
+- criar_formulario(titulo, perguntas)
+
+Nunca: apagar ou mover leads em massa, mudar campanhas, anúncios ou pixel.
+Toda resposta traz a origem ("FlipForm") e o período dos dados.
 ```
 
 ## Flip Intelligence
 
+Os indicadores, os painéis, os relatórios e o Painel de Mercado vivem no Flip Intelligence. O
+Pollo CEO mostra os resultados com a fonte e o período, e leva a pessoa ao app para se
+aprofundar.
+
 ```
 Use o prompt-base de servidor MCP para o app "Flip Intelligence".
-O app faz: [descreva].
-Ferramentas:
-- [ex.: consultar_indicadores: recebe indicador e período; devolve a série histórica]
-- [ex.: gerar_relatorio: recebe tema; devolve um relatório em Markdown]
-- [ex.: alertas_ativos: devolve os alertas atuais com gravidade]
-```
+O app faz: análise e inteligência de negócios: indicadores e painéis da empresa, relatórios,
+alertas e o Painel de Mercado (concorrentes, preços e tendências do setor).
 
-## Painel de Inteligência de Mercado
+Só leitura:
+- consultar_indicador(indicador, periodo): série histórica, com fonte e data de atualização.
+- alertas_ativos(): alertas atuais com gravidade.
+- gerar_relatorio(tema, periodo): relatório em Markdown com as fontes citadas.
+- resumo_de_mercado(setor, periodo): os pontos mais importantes do Painel de Mercado.
+- comparar_concorrentes(categoria, regiao): preços e novidades dos concorrentes monitorados.
+- link_do_painel(painel_id): endereço do painel no Flip Intelligence, para abrir no app.
 
-```
-Crie um painel web "Inteligência de Mercado" do Pollo OS (React + TypeScript + Tailwind) e um
-servidor MCP que expõe os mesmos dados aos Bots.
-
-Painel:
-- Concorrentes monitorados: preço, produtos, novidades, presença digital.
-- Tendências do setor do cliente: [setor], com notícias e buscas em alta.
-- Indicadores: participação estimada, faixa de preço, sazonalidade.
-- Filtros por região, período e categoria. Exportar para PDF e planilha.
-
-Fontes de dados: [ex.: Google Trends, sites dos concorrentes, APIs de notícias, base própria].
-
-Ferramentas MCP:
-- comparar_concorrentes(categoria, regiao)
-- tendencias(setor, periodo)
-- resumo_de_mercado(setor): texto curto com os 5 pontos mais importantes da semana.
-```
-
-## Painel de CRM de Vendas integrado ao ERP
-
-```
-Crie um painel web "CRM de Vendas" do Pollo OS (React + TypeScript + Tailwind, backend em
-TypeScript + PostgreSQL) integrado ao ERP do cliente, e um servidor MCP para os Bots.
-
-CRM:
-- Funil de vendas em colunas (lead, contato, proposta, negociação, ganho, perdido), arrastar e
-  soltar.
-- Ficha do cliente: contatos, histórico de compras (vindo do ERP), propostas, tarefas, anotações.
-- Metas por vendedor, previsão de vendas e ticket médio.
-
-Integração com ERP:
-- Camada de conectores com uma interface comum (clientes, produtos, pedidos, notas fiscais,
-  estoque, contas a receber).
-- Primeiros conectores: [ex.: Bling, Tiny, Omie, Sankhya, TOTVS Protheus, SAP Business One].
-- Sincronização incremental a cada 15 minutos e por webhook quando o ERP oferecer.
-
-Ferramentas MCP:
-- buscar_cliente(nome_ou_documento)
-- historico_de_compras(cliente_id, periodo)
-- criar_oportunidade(cliente_id, valor, etapa): destrutiva.
-- mover_oportunidade(id, etapa): destrutiva.
-- previsao_de_vendas(periodo, vendedor?)
-- estoque_do_produto(produto)
+Escrita (com aprovação):
+- compartilhar_painel(painel_id, pessoa)
 ```
 
 ## Agenda
@@ -139,6 +126,6 @@ Nunca permitir estorno ou transferência sem aprovação humana registrada na au
 
 Depois que o servidor MCP estiver no ar (ex.: `https://flipform.pollo.app/mcp`):
 
-1. No Pollo OS, entre em **Apps** e adicione um app novo com esse endereço.
+1. No Pollo OS, entre em **Apps** e adicione o conector com esse endereço.
 2. Escolha se a conexão é por pessoa (OAuth) ou pela empresa (chave).
 3. Em cada Bot, libere as ferramentas desse app e escolha quais pedem aprovação.

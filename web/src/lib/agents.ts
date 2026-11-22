@@ -16,11 +16,14 @@ export type Agent = {
 
 export type Draft = Omit<Agent, "id">;
 
-/** O Pollo do próprio Pollo OS: quem atende quando ainda não há nenhum agente criado. */
-export const POLLO: Agent = {
-  id: "pollo",
-  name: "Pollo",
-  purpose: "Seu assistente no Pollo OS. Ajudo a criar agentes e a achar o que você precisa.",
+/**
+ * O Pollo CEO: o agente executivo da Home, de nível estratégico. Conversa com o empresário,
+ * coordena os outros agentes e pede aprovação antes de qualquer ação sensível.
+ */
+export const POLLO_CEO: Agent = {
+  id: "pollo-ceo",
+  name: "Pollo CEO",
+  purpose: "Converso com você sobre a empresa, coordeno os outros agentes e peço sua aprovação antes de agir.",
   model: "equilibrado",
   shape: "quadrado",
   color: "laranja",

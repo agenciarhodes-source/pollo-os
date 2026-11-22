@@ -1,5 +1,5 @@
-import { AgentsScreen } from "@/components/agents/agents-screen";
+import { HomeScreen } from "@/components/home/home-screen";
 
-export default function AgentsPage() {
-  return <AgentsScreen />;
+export default function HomePage() {
+  return <HomeScreen />;
 }
