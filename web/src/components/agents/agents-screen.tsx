@@ -1,31 +1,16 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { ChevronDown, Filter, LayoutGrid, Plus, Search, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Filter, LayoutGrid, MessageCircle, Plus, Search, X } from "lucide-react";
 import {
   COLORS,
   FACES,
   MOODS,
   Pollo,
   SHAPES,
-  type ColorId,
-  type FaceId,
-  type MoodId,
-  type ShapeId,
 } from "@/components/pollo/pollo";
-
-type Agent = {
-  id: string;
-  name: string;
-  purpose: string;
-  model: string;
-  shape: ShapeId;
-  color: ColorId;
-  face: FaceId;
-  mood: MoodId;
-};
-
-type Draft = Omit<Agent, "id">;
+import { saveAgents, toDraft, useAgents, type Agent, type Draft } from "@/lib/agents";
+import { useChat } from "@/components/chat/chat-provider";
 
 const MODELS = [
   { id: "equilibrado", label: "Pollo IA", detail: "Equilibrado" },
@@ -101,60 +86,10 @@ const EMPTY: Draft = {
   purpose: "",
   model: "equilibrado",
   shape: "quadrado",
-  color: "marrom",
+  color: "laranja",
   face: "olhos",
   mood: "animado",
 };
-
-/*
- * Enquanto não há servidor, os agentes ficam guardados neste navegador.
- * Sem armazenamento (janela anônima, por exemplo), a lista vale só nesta visita.
- */
-const STORAGE_KEY = "pollo-os:agentes";
-const CHANGED = "pollo-os:agentes-mudaram";
-let memory = "[]";
-
-function readAgents(): string {
-  try {
-    return localStorage.getItem(STORAGE_KEY) ?? "[]";
-  } catch {
-    return memory;
-  }
-}
-
-function saveAgents(agents: Agent[]) {
-  memory = JSON.stringify(agents);
-  try {
-    localStorage.setItem(STORAGE_KEY, memory);
-  } catch {
-    // Fica só na memória.
-  }
-  window.dispatchEvent(new Event(CHANGED));
-}
-
-function subscribe(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(CHANGED, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(CHANGED, onChange);
-  };
-}
-
-function useAgents(): Agent[] {
-  const raw = useSyncExternalStore(subscribe, readAgents, () => "[]");
-  return useMemo(() => {
-    try {
-      return JSON.parse(raw) as Agent[];
-    } catch {
-      return [];
-    }
-  }, [raw]);
-}
-
-function toDraft({ name, purpose, model, shape, color, face, mood }: Agent): Draft {
-  return { name, purpose, model, shape, color, face, mood };
-}
 
 function Picker({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -196,6 +131,7 @@ function PickButton({
 
 export function AgentsScreen() {
   const agents = useAgents();
+  const chat = useChat();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft>(EMPTY);
   const [query, setQuery] = useState("");
@@ -336,7 +272,17 @@ export function AgentsScreen() {
       <main className="flex min-w-0 flex-1 flex-col overflow-hidden bg-background md:rounded-2xl md:ring-1 md:ring-line">
         <header className="flex h-12 flex-none items-center gap-2.5 border-b border-line px-4">
           <Pollo {...draft} size={22} alive={false} />
-          <h1 className="truncate text-sm font-medium">{title}</h1>
+          <h1 className="min-w-0 flex-1 truncate text-sm font-medium">{title}</h1>
+          {selected && (
+            <button
+              type="button"
+              onClick={() => chat.open(selected.id)}
+              className="flex h-8 items-center gap-1.5 rounded-full bg-brand px-3.5 text-sm font-medium text-brand-foreground hover:opacity-90"
+            >
+              <MessageCircle className="size-4" strokeWidth={2} />
+              Conversar
+            </button>
+          )}
         </header>
 
         <div className="flex-1 overflow-y-auto">

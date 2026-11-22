@@ -244,7 +244,7 @@ function Face({ face, cy, ink }: { face: FaceId; cy: number; ink: string }) {
 
 export function Pollo({
   shape = "bola",
-  color = "marrom",
+  color = "laranja",
   face = "olhos",
   mood = "animado",
   size = 96,

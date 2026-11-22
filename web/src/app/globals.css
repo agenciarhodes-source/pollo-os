@@ -12,8 +12,8 @@
   --border: #ebe5dd;
   --foreground: #2b201b;
   --muted: #6e625a;
-  /* Marrom café: a cor da marca na interface. */
-  --brand: #5c3a21;
+  /* Laranja Pollo: a cor da marca na interface. */
+  --brand: #ca6e23;
   --brand-foreground: #ffffff;
 }
 
@@ -26,8 +26,8 @@
     --border: #342a24;
     --foreground: #f3ece4;
     --muted: #a89a90;
-    /* Café com leite: o marrom que aparece bem sobre o escuro. */
-    --brand: #c9a07c;
+    /* Um laranja mais claro, que aparece bem sobre o escuro. */
+    --brand: #e08a45;
     --brand-foreground: #1a1512;
   }
 }

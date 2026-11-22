@@ -1,5 +1,5 @@
-import { AppShell } from "@/components/shell/app-shell";
+import { AppShellWithChat } from "@/components/shell/app-shell";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return <AppShell>{children}</AppShell>;
+  return <AppShellWithChat>{children}</AppShellWithChat>;
 }
