@@ -1,27 +1,45 @@
 @import "tailwindcss";
 
-/* Cores provisórias da Pollo. O visual definitivo vem da nova referência. */
+/*
+ * Cores da Pollo. Três superfícies: a moldura (menu de ícones e lista), a área
+ * de trabalho e os cartões. Claro e escuro seguem o sistema.
+ */
 :root {
   --background: #faf9f6;
+  --panel: #f3efe8;
+  --card: #ffffff;
+  --field: #ffffff;
+  --border: #e6dfd4;
   --foreground: #2b201b;
-  --muted: #5f534c;
+  --muted: #6b5f57;
   --brand: #ca6e23;
+  --brand-foreground: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #1c1613;
+    --background: #1a1512;
+    --panel: #120e0c;
+    --card: #231c18;
+    --field: #231c18;
+    --border: #342a24;
     --foreground: #f3ece4;
-    --muted: #b3a69c;
+    --muted: #a89a90;
     --brand: #e08a45;
+    --brand-foreground: #1a1512;
   }
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-panel: var(--panel);
+  --color-card: var(--card);
+  --color-field: var(--field);
+  --color-line: var(--border);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
   --font-sans: var(--font-sans);
 }
 

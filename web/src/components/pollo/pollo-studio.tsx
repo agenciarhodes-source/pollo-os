@@ -73,7 +73,7 @@ export function PolloStudio() {
         <p className="text-sm font-medium text-brand">Pollo OS</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">As criaturas Pollo</h1>
         <p className="max-w-xl text-muted">
-          Cada Bot é um Pollo: um formato, uma cor, um rosto e um jeito de se mexer. Monte o seu.
+          Cada agente é um Pollo: um formato, uma cor, um rosto e um jeito de se mexer. Monte o seu.
         </p>
       </header>
 
