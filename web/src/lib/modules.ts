@@ -30,17 +30,7 @@ export const UNAVAILABLE_MODULES: Record<string, ModuleInfo> = {
   },
 
 
-  consumo: {
-    title: "Consumo & Custos",
-    summary: "Quanto a empresa usa de IA, por agente, serviço e modalidade (texto ou voz), e os limites de cada um.",
-    will: [
-      "Acompanhar o consumo do mês",
-      "Definir limites por empresa, agente e serviço",
-      "Receber um aviso antes de passar do limite",
-    ],
-    needs: `${SERVER} E o modelo de IA ligado, para haver consumo a medir.`,
-    link: { href: "/", label: "Voltar para a Home" },
-  },
+
   habilidades: {
     title: "Habilidades",
     summary: "As instruções que os agentes seguem para fazer bem um tipo de tarefa.",

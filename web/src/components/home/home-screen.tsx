@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowUp, Bot, CalendarDays, Gauge, Info, LayoutGrid, Mic, Paperclip, PhoneCall } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
+import { RichText } from "@/components/chat/rich-text";
 import { authClient } from "@/lib/auth-client";
-import { useMessages, useSendMessage } from "@/lib/client/data";
+import { useAgentChat } from "@/lib/client/data";
+import { useAiStatus } from "@/lib/client/stream";
 import { POLLO_CEO } from "@/lib/agents";
 
 /**
@@ -19,7 +21,25 @@ const ACTIONS = [
   { id: "agentes", label: "Acompanhar agentes", icon: Bot, href: "/agentes", reason: null },
 ] as const;
 
-function DemoNotice() {
+/**
+ * O aviso do que a conversa é: com a IA ligada, uma resposta de verdade que ainda não vê os dados
+ * dos apps; sem ela, uma demonstração.
+ */
+const brl = (v: number) => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "USD" }).format(v);
+
+function DemoNotice({ enabled }: { enabled: boolean }) {
+  if (enabled) {
+    return (
+      <p role="note" className="flex items-start gap-2 rounded-xl bg-panel/70 px-3 py-2 text-xs leading-relaxed text-muted ring-1 ring-line">
+        <Info className="mt-px size-4 flex-none" />
+        <span>
+          <strong className="font-semibold text-foreground">IA ligada.</strong> O Pollo CEO usa a memória da empresa, mas ainda não
+          vê os dados do FlipForm nem do Flip Intelligence. Ele marca o que é fato, hipótese ou recomendação; confira o que for
+          importante.
+        </span>
+      </p>
+    );
+  }
   return (
     <p
       role="note"
@@ -35,10 +55,11 @@ function DemoNotice() {
 }
 
 export function HomeScreen() {
-  const { messages: saved } = useMessages(POLLO_CEO.id);
-  const { send, sending: typing, error: sendError } = useSendMessage(POLLO_CEO.id);
+  const { messages: saved, send, sending, error: sendError } = useAgentChat(POLLO_CEO.id);
+  const ai = useAiStatus();
+  const typing = sending && saved.at(-1)?.role === "user";
   const { data: activeOrg } = authClient.useActiveOrganization();
-  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text }));
+  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text, demo: m.demo }));
   const [text, setText] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
   const started = messages.length > 0;
@@ -125,9 +146,21 @@ export function HomeScreen() {
           </span>
           <span className="truncate text-muted">{activeOrg?.name ?? "…"}</span>
         </div>
-        <span className="flex-none rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
-          Em demonstração
-        </span>
+        {ai &&
+          (ai.enabled ? (
+            <span
+              title={`Uso de IA da empresa neste mês: ${brl(ai.spentUsd)} de ${brl(ai.limitUsd)}`}
+              className={`flex-none rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ${
+                ai.blocked ? "bg-red-50 text-red-700 ring-red-200" : "bg-emerald-50 text-emerald-800 ring-emerald-200"
+              }`}
+            >
+              {ai.blocked ? "Limite de IA do mês atingido" : "IA ligada"}
+            </span>
+          ) : (
+            <span className="flex-none rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
+              Em demonstração
+            </span>
+          ))}
       </header>
 
       {!started ? (
@@ -187,7 +220,7 @@ export function HomeScreen() {
               </Link>
             </section>
 
-            <DemoNotice />
+            <DemoNotice enabled={Boolean(ai?.enabled)} />
           </div>
         </div>
       ) : (
@@ -195,7 +228,7 @@ export function HomeScreen() {
           <div className="flex-1 overflow-y-auto">
             <ol className="mx-auto flex w-full max-w-2xl flex-col gap-4 px-4 py-6" aria-label="Conversa com o Pollo CEO">
               <li>
-                <DemoNotice />
+                <DemoNotice enabled={Boolean(ai?.enabled)} />
               </li>
               {messages.map((m) =>
                 m.from === "voce" ? (
@@ -210,11 +243,11 @@ export function HomeScreen() {
                     <Pollo {...POLLO_CEO} size={32} alive={false} title="Pollo CEO" />
                     <div className="flex flex-col gap-1">
                       <span className="text-xs font-medium text-muted">
-                        Pollo CEO <span className="text-amber-700">· demonstração</span>
+                        Pollo CEO {m.demo && <span className="text-amber-700">· demonstração</span>}
                       </span>
-                      <p className="rounded-2xl rounded-tl-md bg-panel px-4 py-2.5 text-[15px] leading-relaxed ring-1 ring-line">
-                        {m.text}
-                      </p>
+                      <div className="rounded-2xl rounded-tl-md bg-panel px-4 py-2.5 text-[15px] leading-relaxed ring-1 ring-line">
+                        <RichText text={m.text} />
+                      </div>
                     </div>
                   </li>
                 ),

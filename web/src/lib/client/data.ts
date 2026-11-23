@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import useSWR, { mutate, useSWRConfig } from "swr";
+import useSWR, { mutate } from "swr";
+import { useStreamingChat } from "./stream";
 import type { Agent, Draft } from "@/lib/agents";
 
 /*
@@ -103,49 +103,8 @@ export async function setAppAccess(appId: string, agentId: string, allowed: bool
 
 export type ChatMessage = { id: string; role: "user" | "assistant"; text: string; demo: boolean };
 
-const messagesUrl = (agentKey: string) => `/api/conversations/${encodeURIComponent(agentKey)}/messages`;
-
-export function useMessages(agentKey: string) {
-  const { data, error, isLoading } = useSWR<{ messages: ChatMessage[] }>(messagesUrl(agentKey), fetcher);
-  return { messages: data?.messages ?? [], error: error as ApiError | undefined, isLoading };
-}
-
-/** Envia uma mensagem; enquanto o servidor responde, `sending` fica verdadeiro. */
-export function useSendMessage(agentKey: string) {
-  // O mutate do cache em uso (o do app, ou o de um teste).
-  const { mutate } = useSWRConfig();
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function send(text: string) {
-    const clean = text.trim();
-    if (!clean) return;
-    setSending(true);
-    setError(null);
-    const url = messagesUrl(agentKey);
-    const temp: ChatMessage = { id: `temp-${Date.now()}`, role: "user", text: clean, demo: false };
-    try {
-      await mutate(
-        url,
-        async (current?: { messages: ChatMessage[] }) => {
-          const { messages } = await request<{ messages: ChatMessage[] }>(url, {
-            method: "POST",
-            body: JSON.stringify({ text: clean }),
-          });
-          return { messages: [...(current?.messages ?? []), ...messages] };
-        },
-        {
-          optimisticData: (current?: { messages: ChatMessage[] }) => ({ messages: [...(current?.messages ?? []), temp] }),
-          rollbackOnError: true,
-          revalidate: false,
-        },
-      );
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Não foi possível enviar.");
-    } finally {
-      setSending(false);
-    }
-  }
-
-  return { send, sending, error };
+/** A conversa com um agente (ou com o Pollo CEO), com a resposta em fluxo. */
+export function useAgentChat(agentKey: string) {
+  const key = encodeURIComponent(agentKey);
+  return useStreamingChat(`/api/conversations/${key}/messages`, `/api/conversations/${key}/stream`);
 }

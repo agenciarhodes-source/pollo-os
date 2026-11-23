@@ -107,7 +107,7 @@ export async function resolveAgentName(db: Db, orgId: string, agentKey: string) 
   return (await findAgent(db, orgId, agentKey))?.name ?? null;
 }
 
-async function conversationId(db: Db, orgId: string, userId: string, agentKey: string, create: boolean) {
+export async function conversationId(db: Db, orgId: string, userId: string, agentKey: string, create: boolean) {
   const where = and(
     eq(schema.conversations.organizationId, orgId),
     eq(schema.conversations.userId, userId),

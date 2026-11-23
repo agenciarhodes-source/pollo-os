@@ -21,6 +21,17 @@ export function installFakeApi() {
       const method = init?.method ?? "GET";
       if (url.pathname === "/api/agents" && method === "GET") return json({ agents: state.agents });
       if (url.pathname === "/api/app-access" && method === "GET") return json({ access: state.access });
+      if (url.pathname === "/api/ai/status") return json({ enabled: false, spentUsd: 0, limitUsd: 5, blocked: false });
+      const s = url.pathname.match(/^\/api\/conversations\/([^/]+)\/stream$/);
+      if (s && method === "POST") {
+        // Sem IA no teste: a resposta de demonstração, em texto, como o servidor faz.
+        const key = decodeURIComponent(s[1]);
+        const list = (state.messages[key] ??= []);
+        const { text } = JSON.parse(String(init?.body));
+        const reply = `Em demonstração: recebi “${text}”. Esta não é uma resposta real.`;
+        list.push({ id: `u${list.length}`, role: "user", text, demo: false }, { id: `a${list.length}`, role: "assistant", text: reply, demo: true });
+        return new Response(reply, { status: 200, headers: { "content-type": "text/plain; charset=utf-8", "x-pollo-demo": "1" } });
+      }
       const m = url.pathname.match(/^\/api\/conversations\/([^/]+)\/messages$/);
       if (m) {
         const key = decodeURIComponent(m[1]);

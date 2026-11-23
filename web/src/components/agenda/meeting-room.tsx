@@ -18,6 +18,7 @@ import {
   type Minutes,
 } from "@/lib/client/meetings";
 import { StatusBadge } from "./status-badge";
+import { RichText } from "@/components/chat/rich-text";
 
 const ACTION_LABEL: Record<MeetingAction, string> = {
   agendar: "Agendar",
@@ -89,12 +90,14 @@ function MeetingChat({ meeting }: { meeting: Meeting }) {
                 <span className="text-xs font-medium text-muted">
                   Pollo CEO {m.demo && <span className="text-amber-700">· demonstração</span>}
                 </span>
-                <p className="rounded-2xl rounded-tl-md bg-panel px-3.5 py-2 text-[15px] leading-relaxed ring-1 ring-line">{m.text}</p>
+                <div className="rounded-2xl rounded-tl-md bg-panel px-3.5 py-2 text-[15px] leading-relaxed ring-1 ring-line">
+                  <RichText text={m.text} />
+                </div>
               </div>
             </li>
           ),
         )}
-        {sending && <li className="text-sm text-muted">Pollo CEO está escrevendo…</li>}
+        {sending && messages.at(-1)?.role === "user" && <li className="text-sm text-muted">Pollo CEO está escrevendo…</li>}
         <div ref={endRef} />
       </ol>
       {open && (
@@ -477,8 +480,8 @@ export function MeetingRoom({ id }: { id: string }) {
               }
             >
               <p className="text-xs text-muted">
-                Voz em tempo real: não conectada. Nada é gravado nem transcrito nesta versão. A conversa é só por texto, e as
-                respostas são de demonstração.
+                Voz em tempo real: não conectada. Nada é gravado nem transcrito nesta versão; a conversa é por texto. Com a IA
+                ligada, o Pollo CEO conhece a pauta e a memória da empresa, e a ata continua sendo confirmada por você.
               </p>
               <MeetingChat meeting={meeting} />
             </Section>
