@@ -131,3 +131,21 @@ Branch `pr-b/backend-multiempresa`, em cima do PR A.
 Variáveis necessárias na Vercel (Production e Preview): `DATABASE_URL`, `DATABASE_URL_UNPOOLED`,
 `BETTER_AUTH_SECRET`. `BETTER_AUTH_URL` é opcional: sem ela, o app usa o endereço da própria
 publicação da Vercel. O modelo está em `web/.env.example`.
+
+## Estado do PR C (Agenda e reuniões) — sem voz e sem IA
+
+Branch `pr-c/agenda-reunioes`, a partir da `main` com A e B.
+
+| Item | Situação |
+| --- | --- |
+| Tabelas `executive_meetings`, `meeting_participants`, `meeting_minutes` (migração `0001_agenda.sql`, aplicada no Neon) | Feito |
+| Agenda: Próximas, Histórico e Nova reunião; editar antes de começar | Feito |
+| Status com regras no servidor: rascunho → agendada → em andamento → concluída; cancelar antes de começar. Troca atômica (dois cliques simultâneos: só um vale) | Feito |
+| Quem vê: só os participantes, da mesma empresa. Quem muda: só quem marcou | Feito |
+| Sala de reunião: conversa por texto com o Pollo CEO só durante a reunião (respostas de demonstração) | Feito |
+| Ata (resumo, decisões, próximos passos, dúvidas): escrita pela pessoa, só vale depois de confirmada; confirmada, não muda mais | Feito |
+| "Preparar reunião" na Home leva a Nova reunião | Feito |
+| Voz em tempo real, consentimento de gravação, transcrição e ata proposta pela IA | **Fora deste PR**: dependem da IA e de um provedor de voz. A tela mostra "não conectada" e diz que nada é gravado |
+| Notificações de reunião | **Fora deste PR** |
+| Google Agenda e Outlook | **Fora deste PR**: aparecem como "não conectados" |
+| Testes | 13 novos: isolamento entre empresas e entre colegas, status, concorrência, edição, conversa e ata |

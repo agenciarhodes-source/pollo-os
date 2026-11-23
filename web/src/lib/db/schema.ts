@@ -223,3 +223,78 @@ export const usageEvents = pgTable(
   },
   (t) => [index("usage_events_org_idx").on(t.organizationId, t.createdAt)],
 );
+
+/* ---------- Agenda: reuniões executivas com o Pollo CEO ---------- */
+
+/**
+ * Uma reunião executiva com o Pollo CEO. A agenda de vendas e atendimento fica no FlipForm;
+ * esta é a da relação do empresário com a IA.
+ * status: rascunho | agendada | em_andamento | concluida | cancelada
+ */
+export const executiveMeetings = pgTable(
+  "executive_meetings",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    createdBy: text("created_by")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    agentKey: text("agent_key").notNull().default("pollo-ceo"),
+    title: text("title").notNull(),
+    agenda: text("agenda").notNull().default(""),
+    startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+    endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+    timezone: text("timezone").notNull().default("America/Sao_Paulo"),
+    status: text("status").notNull().default("rascunho"),
+    startedAt: timestamp("started_at", { withTimezone: true }),
+    finishedAt: timestamp("finished_at", { withTimezone: true }),
+    canceledAt: timestamp("canceled_at", { withTimezone: true }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("executive_meetings_org_start_idx").on(t.organizationId, t.startsAt)],
+);
+
+/** Quem pode ver e participar da reunião. Quem cria entra sempre. */
+export const meetingParticipants = pgTable(
+  "meeting_participants",
+  {
+    meetingId: uuid("meeting_id")
+      .notNull()
+      .references(() => executiveMeetings.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.meetingId, t.userId] }), index("meeting_participants_user_idx").on(t.organizationId, t.userId)],
+);
+
+/**
+ * A ata da reunião. Enquanto não há IA, quem escreve é a pessoa. Só vale (e só pode entrar na
+ * memória da empresa) depois de confirmada; confirmada, não muda mais.
+ */
+export const meetingMinutes = pgTable("meeting_minutes", {
+  meetingId: uuid("meeting_id")
+    .primaryKey()
+    .references(() => executiveMeetings.id, { onDelete: "cascade" }),
+  organizationId: text("organization_id")
+    .notNull()
+    .references(() => organization.id, { onDelete: "cascade" }),
+  summary: text("summary").notNull().default(""),
+  /** [{ text }] */
+  decisions: text("decisions").notNull().default("[]"),
+  /** [{ text, owner, due }] */
+  actionItems: text("action_items").notNull().default("[]"),
+  openQuestions: text("open_questions").notNull().default(""),
+  updatedBy: text("updated_by").references(() => user.id, { onDelete: "set null" }),
+  confirmedBy: text("confirmed_by").references(() => user.id, { onDelete: "set null" }),
+  confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});

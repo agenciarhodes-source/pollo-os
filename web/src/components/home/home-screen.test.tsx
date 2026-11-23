@@ -41,12 +41,13 @@ describe("Home", () => {
   it("só habilita a ação que funciona, e diz o motivo das outras", () => {
     renderHome();
     const actions = screen.getByRole("list", { name: "Ações rápidas" });
-    for (const name of ["Conversar por voz", "Preparar reunião", "Analisar empresa"]) {
+    for (const name of ["Conversar por voz", "Analisar empresa"]) {
       const button = within(actions).getByRole("button", { name: new RegExp(name) });
       expect(button).toBeDisabled();
       expect(button).toHaveAccessibleDescription(/.+/);
     }
     expect(within(actions).getByRole("link", { name: /Acompanhar agentes/ })).toHaveAttribute("href", "/agentes");
+    expect(within(actions).getByRole("link", { name: /Preparar reunião/ })).toHaveAttribute("href", "/agenda/nova");
   });
 
   it("não habilita microfone nem anexos sem servidor", () => {

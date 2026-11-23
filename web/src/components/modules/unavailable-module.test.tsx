@@ -17,7 +17,7 @@ describe("módulos indisponíveis", () => {
     expect(text).not.toMatch(/R\$\s?\d|\d+%|\d{2}\/\d{2}/);
   });
 
-  it("a Agenda é a da relação com a IA, não a de vendas", () => {
-    expect(UNAVAILABLE_MODULES.agenda.note).toMatch(/FlipForm/);
+  it("a Agenda já não está entre os indisponíveis", () => {
+    expect(UNAVAILABLE_MODULES).not.toHaveProperty("agenda");
   });
 });
