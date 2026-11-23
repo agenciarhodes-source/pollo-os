@@ -298,3 +298,79 @@ export const meetingMinutes = pgTable("meeting_minutes", {
   createdAt: createdAt(),
   updatedAt: updatedAt(),
 });
+
+/* ---------- Segundo Cérebro: a memória da empresa ---------- */
+
+/**
+ * Um item da memória da empresa.
+ * kind: nota | decisao | aprendizado | documento | fonte
+ * visibility: empresa (todos da empresa veem) | privada (só quem criou)
+ * As decisões que vêm de uma ata confirmada trazem a reunião de origem.
+ */
+export const memoryItems = pgTable(
+  "memory_items",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull().default("nota"),
+    title: text("title").notNull(),
+    body: text("body").notNull().default(""),
+    /** De onde veio, em texto legível (ex.: "Ata da reunião Revisão da semana, 23/11/2026"). */
+    source: text("source").notNull().default(""),
+    /** Endereço de um documento ou fonte externa. */
+    url: text("url"),
+    sourceMeetingId: uuid("source_meeting_id").references(() => executiveMeetings.id, { onDelete: "set null" }),
+    visibility: text("visibility").notNull().default("empresa"),
+    createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [index("memory_items_org_idx").on(t.organizationId, t.updatedAt)],
+);
+
+/** Uma ligação entre dois itens da memória (lida nos dois sentidos). */
+export const memoryLinks = pgTable(
+  "memory_links",
+  {
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    fromId: uuid("from_id")
+      .notNull()
+      .references(() => memoryItems.id, { onDelete: "cascade" }),
+    toId: uuid("to_id")
+      .notNull()
+      .references(() => memoryItems.id, { onDelete: "cascade" }),
+    createdBy: text("created_by").references(() => user.id, { onDelete: "set null" }),
+    createdAt: createdAt(),
+  },
+  (t) => [primaryKey({ columns: [t.fromId, t.toId] })],
+);
+
+/* ---------- Atividade ---------- */
+
+/**
+ * O registro do que aconteceu no Pollo OS: quem fez, o quê e quando. Só se acrescenta; nunca se
+ * edita. action: ex. "agente.criado", "reuniao.iniciada", "ata.confirmada", "memoria.criada".
+ */
+export const activityEvents = pgTable(
+  "activity_events",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    actorUserId: text("actor_user_id").references(() => user.id, { onDelete: "set null" }),
+    action: text("action").notNull(),
+    targetType: text("target_type").notNull(),
+    targetId: text("target_id"),
+    /** Frase legível do que aconteceu. */
+    summary: text("summary").notNull(),
+    /** Só pessoas que podem ver o alvo veem o evento: empresa | privada (só o autor). */
+    visibility: text("visibility").notNull().default("empresa"),
+    createdAt: createdAt(),
+  },
+  (t) => [index("activity_events_org_idx").on(t.organizationId, t.createdAt)],
+);

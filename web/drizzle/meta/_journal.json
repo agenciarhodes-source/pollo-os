@@ -15,6 +15,13 @@
       "when": 1795451255229,
       "tag": "0001_agenda",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1795452931992,
+      "tag": "0002_segundo_cerebro",
+      "breakpoints": true
     }
   ]
 }
