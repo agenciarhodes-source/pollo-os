@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUp, ChevronDown, X } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
 import { useChat } from "./chat-provider";
+import { useMessages, useSendMessage } from "@/lib/client/data";
 
 const STARTERS = ["O que você sabe fazer?", "Me ajude a organizar o meu dia", "Resuma o que aconteceu hoje"];
 
@@ -33,7 +34,10 @@ export function PolloButton() {
 
 /** A conversa com o agente: um painel à direita (no celular, a tela inteira). */
 export function ChatPanel() {
-  const { isOpen, agent, agents, messages, typing, close, switchTo, send } = useChat();
+  const { isOpen, agent, agents, close, switchTo } = useChat();
+  const { messages: saved } = useMessages(agent.id);
+  const { send, sending: typing, error: sendError } = useSendMessage(agent.id);
+  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text }));
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -151,6 +155,11 @@ export function ChatPanel() {
         <div ref={endRef} />
       </div>
 
+      {sendError && (
+        <p role="alert" className="px-4 pb-2 text-sm text-red-600">
+          {sendError}
+        </p>
+      )}
       <form
         onSubmit={(e) => {
           e.preventDefault();

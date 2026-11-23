@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowUpRight, Lock, Plus, Search, Sparkles, X } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
-import { useAgents, type Agent } from "@/lib/agents";
-import { CONNECTIONS, POLLO_APPS, setAppAccess, useAppAccess, type PolloApp } from "@/lib/apps";
+import type { Agent } from "@/lib/agents";
+import { CONNECTIONS, POLLO_APPS, type PolloApp } from "@/lib/apps";
+import { setAppAccess, useAgents, useAppAccess } from "@/lib/client/data";
 
 function AppIcon({ app, size = 64 }: { app: PolloApp; size?: number }) {
   const Icon = app.icon;
@@ -79,12 +80,14 @@ function AppPanel({
   allowed,
   onToggle,
   onClose,
+  error,
 }: {
   app: PolloApp;
   agents: Agent[];
   allowed: string[];
   onToggle: (agentId: string) => void;
   onClose: () => void;
+  error?: string | null;
 }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -163,6 +166,11 @@ function AppPanel({
           <div>
             <h3 className="mb-1 text-sm font-semibold">Agentes com acesso</h3>
             <p className="mb-3 text-xs text-muted">Escolha quem pode trabalhar no {app.name}.</p>
+            {error && (
+              <p role="alert" className="mb-3 rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+                {error}
+              </p>
+            )}
             {agents.length === 0 ? (
               <Link
                 href="/agentes"
@@ -214,7 +222,7 @@ function AppPanel({
 }
 
 export function AppsScreen() {
-  const agents = useAgents();
+  const { agents } = useAgents();
   const access = useAppAccess();
   const [openId, setOpenId] = useState<string | null>(null);
   const [query, setQuery] = useState("");
@@ -226,10 +234,16 @@ export function AppsScreen() {
 
   const agentsIn = (appId: string) => agents.filter((a) => (access[appId] ?? []).includes(a.id));
 
-  function toggle(appId: string, agentId: string) {
-    const current = access[appId] ?? [];
-    const next = current.includes(agentId) ? current.filter((id) => id !== agentId) : [...current, agentId];
-    setAppAccess({ ...access, [appId]: next });
+  const [toggleError, setToggleError] = useState<string | null>(null);
+
+  async function toggle(appId: string, agentId: string) {
+    setToggleError(null);
+    const allowed = !(access[appId] ?? []).includes(agentId);
+    try {
+      await setAppAccess(appId, agentId, allowed);
+    } catch (e) {
+      setToggleError(e instanceof Error ? e.message : "Não foi possível mudar o acesso.");
+    }
   }
 
   return (
@@ -319,7 +333,8 @@ export function AppsScreen() {
           app={openApp}
           agents={agents}
           allowed={access[openApp.id] ?? []}
-          onToggle={(agentId) => toggle(openApp.id, agentId)}
+          onToggle={(agentId) => void toggle(openApp.id, agentId)}
+          error={toggleError}
           onClose={() => setOpenId(null)}
         />
       )}

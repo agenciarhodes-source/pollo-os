@@ -5,4 +5,4 @@ import { cleanup } from "@testing-library/react";
 afterEach(() => cleanup());
 
 // O jsdom não tem estas APIs do navegador, que a interface usa.
-Element.prototype.scrollIntoView = vi.fn();
+if (typeof Element !== "undefined") Element.prototype.scrollIntoView = vi.fn();

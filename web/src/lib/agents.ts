@@ -1,6 +1,3 @@
-"use client";
-
-import { useMemo, useSyncExternalStore } from "react";
 import type { ColorId, FaceId, MoodId, ShapeId } from "@/components/pollo/pollo";
 
 export type Agent = {
@@ -32,49 +29,28 @@ export const POLLO_CEO: Agent = {
 };
 
 /*
- * Enquanto não há servidor, os agentes ficam guardados neste navegador.
- * Sem armazenamento (janela anônima, por exemplo), a lista vale só nesta visita.
+ * Antes do servidor, os agentes ficavam só neste navegador, nesta chave. Agora ficam no banco;
+ * estas funções servem só para oferecer a importação deles e depois limpar o navegador.
  */
-const STORAGE_KEY = "pollo-os:agentes";
-const CHANGED = "pollo-os:agentes-mudaram";
-let memory = "[]";
+const LEGACY_KEY = "pollo-os:agentes";
 
-function readAgents(): string {
+export function readLegacyAgents(): Agent[] {
   try {
-    return localStorage.getItem(STORAGE_KEY) ?? "[]";
+    const raw = localStorage.getItem(LEGACY_KEY);
+    const list = raw ? (JSON.parse(raw) as Agent[]) : [];
+    return Array.isArray(list) ? list.filter((a) => a && typeof a.name === "string") : [];
   } catch {
-    return memory;
+    return [];
   }
 }
 
-export function saveAgents(agents: Agent[]) {
-  memory = JSON.stringify(agents);
+export function clearLegacyAgents() {
   try {
-    localStorage.setItem(STORAGE_KEY, memory);
+    localStorage.removeItem(LEGACY_KEY);
+    localStorage.removeItem("pollo-os:apps-acesso");
   } catch {
-    // Fica só na memória.
+    // Sem armazenamento: nada a limpar.
   }
-  window.dispatchEvent(new Event(CHANGED));
-}
-
-function subscribe(onChange: () => void) {
-  window.addEventListener("storage", onChange);
-  window.addEventListener(CHANGED, onChange);
-  return () => {
-    window.removeEventListener("storage", onChange);
-    window.removeEventListener(CHANGED, onChange);
-  };
-}
-
-export function useAgents(): Agent[] {
-  const raw = useSyncExternalStore(subscribe, readAgents, () => "[]");
-  return useMemo(() => {
-    try {
-      return JSON.parse(raw) as Agent[];
-    } catch {
-      return [];
-    }
-  }, [raw]);
 }
 
 export function toDraft({ name, purpose, model, shape, color, face, mood }: Agent): Draft {
