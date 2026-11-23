@@ -149,3 +149,18 @@ Branch `pr-c/agenda-reunioes`, a partir da `main` com A e B.
 | Notificações de reunião | **Fora deste PR** |
 | Google Agenda e Outlook | **Fora deste PR**: aparecem como "não conectados" |
 | Testes | 13 novos: isolamento entre empresas e entre colegas, status, concorrência, edição, conversa e ata |
+
+## Estado do PR D (Segundo Cérebro e atividade) — sem IA
+
+Branch `pr-d/segundo-cerebro`, a partir da `main` com A, B e C.
+
+| Item | Situação |
+| --- | --- |
+| Tabelas `memory_items`, `memory_links`, `activity_events` (migração `0002_segundo_cerebro.sql`, aplicada no Neon) | Feito |
+| Segundo Cérebro: notas, decisões, aprendizados, documentos e fontes; busca; filtro por tipo; ligações nos dois sentidos; itens da empresa ou só meus; só quem registrou altera ou apaga | Feito |
+| Ata confirmada → resumo e uma decisão por item na memória, ligados, com a reunião e a data como fonte | Feito |
+| Atividade: registro só de acréscimo de agentes, acessos, reuniões, atas e memória; cada pessoa vê só o que poderia ver (privados: o autor; reuniões: os participantes) | Feito |
+| Decisões & Aprovações: decisões registradas; pedidos de aprovação explicados como dependentes da IA | Feito |
+| Delegação entre agentes, tarefas duráveis, execução de ferramentas, aprovações de ações e custo por agente | **Fora deste PR**: dependem da IA ligada |
+| Retenção (por quanto tempo guardar) e exportação da memória | **Fora deste PR** |
+| Testes | 11 novos: privacidade, autoria, busca, ligações entre empresas, ata → memória, visibilidade da atividade |

@@ -2,6 +2,7 @@ import { and, asc, desc, eq, inArray, isNull } from "drizzle-orm";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import * as z from "zod";
 import { schema } from "@/lib/db";
+import { ingestConfirmedMinutes } from "./memory";
 import { listMessages, sendMessage } from "./repo";
 import { HttpError } from "./tenant";
 
@@ -298,6 +299,16 @@ export async function confirmMinutes(db: Db, orgId: string, userId: string, id: 
     )
     .returning({ id: schema.meetingMinutes.meetingId });
   if (rows.length === 0) throw new HttpError(409, "A ata já foi confirmada.");
+
+  // Confirmada, a ata vale: o resumo e as decisões entram na memória da empresa, com a fonte.
+  await ingestConfirmedMinutes(
+    db,
+    orgId,
+    userId,
+    { id, title: m.title, startsAt: m.startsAt, timezone: m.timezone },
+    { summary: m.minutes.summary, decisions: m.minutes.decisions },
+  );
+  return { title: m.title };
 }
 
 /* ---------- Conversa da reunião ---------- */

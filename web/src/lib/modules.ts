@@ -16,17 +16,7 @@ export const UNAVAILABLE_MODULES: Record<string, ModuleInfo> = {
     note: "Sem funil de vendas nem painel operacional: isso continua no FlipForm.",
     link: { href: "/apps", label: "Ver os apps" },
   },
-  "segundo-cerebro": {
-    title: "Segundo Cérebro",
-    summary: "A memória da empresa: decisões, aprendizados, documentos e fontes, ligados entre si.",
-    will: [
-      "Guardar decisões e aprendizados validados, com fonte e data",
-      "Ligar notas e documentos entre si e navegar pelas relações",
-      "Controlar o que cada pessoa e cada agente pode ver",
-    ],
-    needs: SERVER,
-    link: { href: "/", label: "Conversar com o Pollo CEO" },
-  },
+
   rotinas: {
     title: "Rotinas",
     summary: "O que os seus agentes fazem sozinhos, no horário ou na condição que você escolher.",
@@ -38,28 +28,8 @@ export const UNAVAILABLE_MODULES: Record<string, ModuleInfo> = {
     needs: SERVER,
     link: { href: "/agentes", label: "Ir para Agentes & Operações" },
   },
-  aprovacoes: {
-    title: "Decisões & Aprovações",
-    summary: "Tudo o que os agentes pedem para fazer e precisa da sua confirmação, com a trilha de quem decidiu.",
-    will: [
-      "Aprovar ou recusar o que um agente quer fazer fora do Pollo OS",
-      "Definir critérios: o que sempre pede aprovação e o que nunca pode ser feito",
-      "Consultar o histórico de decisões",
-    ],
-    needs: SERVER,
-    link: { href: "/agentes", label: "Ir para Agentes & Operações" },
-  },
-  atividade: {
-    title: "Atividade",
-    summary: "O que cada agente fez, quando, com que fonte, quanto custou e o resultado.",
-    will: [
-      "Ver os trabalhos pendentes, em execução, concluídos e com falha",
-      "Saber quem pediu cada trabalho e quem aprovou",
-      "Encontrar a fonte de cada resultado",
-    ],
-    needs: `${SERVER} Nada aparece aqui até haver trabalho real registrado.`,
-    link: { href: "/agentes", label: "Ir para Agentes & Operações" },
-  },
+
+
   consumo: {
     title: "Consumo & Custos",
     summary: "Quanto a empresa usa de IA, por agente, serviço e modalidade (texto ou voz), e os limites de cada um.",
