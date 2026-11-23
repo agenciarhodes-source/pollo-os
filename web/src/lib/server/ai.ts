@@ -1,3 +1,4 @@
+import { createOpenAI } from "@ai-sdk/openai";
 import { streamText, type LanguageModel, type ModelMessage } from "ai";
 import { and, asc, desc, eq, gte, or, sql } from "drizzle-orm";
 import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
@@ -6,31 +7,35 @@ import { conversationId, demoReply } from "./repo";
 import { HttpError } from "./tenant";
 
 /*
- * A IA do Pollo OS, pelo Vercel AI Gateway. Na Vercel, o app se identifica sozinho no Gateway
- * (OIDC); fora dela, precisa de AI_GATEWAY_API_KEY. Sem nenhum dos dois, as respostas voltam a
+ * A IA do Pollo OS, pela conta da OpenAI (OPENAI_API_KEY). Sem a chave, as respostas voltam a
  * ser de demonstração, e dizem isso.
  */
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = PgDatabase<PgQueryResultHKT, typeof schema, any>;
 
-/** O modelo de cada opção de agente. */
+/** O modelo de cada opção de agente. Dá para trocar por variável de ambiente, sem mexer no código. */
 export const MODELS = {
-  rapido: "anthropic/claude-haiku-5.5",
-  equilibrado: "anthropic/claude-sonnet-5.5",
-  avancado: "anthropic/claude-opus-5.5",
-} as const;
+  rapido: process.env.OPENAI_MODEL_RAPIDO || "gpt-6-luna",
+  equilibrado: process.env.OPENAI_MODEL_EQUILIBRADO || "gpt-6.1-sol",
+  avancado: process.env.OPENAI_MODEL_AVANCADO || "gpt-6.1-sol",
+};
 export type ModelChoice = keyof typeof MODELS;
 
-/** Preço em US$ por token, para estimar o custo quando o Gateway não informa. */
+/** Preço em US$ por token (tabela da OpenAI, nov/2026), para calcular o custo de cada resposta. */
 const PRICES: Record<string, { input: number; output: number }> = {
-  "anthropic/claude-haiku-5.5": { input: 0.0000001, output: 0.0000005 },
-  "anthropic/claude-sonnet-5.5": { input: 0.000002, output: 0.00001 },
-  "anthropic/claude-opus-5.5": { input: 0.000004, output: 0.00002 },
+  "gpt-6-luna": { input: 0.0000001, output: 0.0000005 },
+  "gpt-6.1-sol": { input: 0.000002, output: 0.00001 },
 };
+/** Modelo sem preço na tabela: conta como caro, para o limite do mês nunca ficar frouxo. */
+const FALLBACK_PRICE = { input: 0.00001, output: 0.00005 };
 
 export function aiEnabled() {
-  return Boolean(process.env.AI_GATEWAY_API_KEY || process.env.VERCEL_OIDC_TOKEN || process.env.VERCEL);
+  return Boolean(process.env.OPENAI_API_KEY);
+}
+
+function openaiModel(id: string): LanguageModel {
+  return createOpenAI({ apiKey: process.env.OPENAI_API_KEY })(id);
 }
 
 /** O limite de gasto por empresa por mês, em milionésimos de dólar. */
@@ -76,11 +81,9 @@ export async function monthUsage(db: Db, orgId: string, now = new Date()) {
   }));
 }
 
-/** O custo de uma resposta: o informado pelo Gateway ou, sem ele, estimado pelos tokens. */
-export function costMicros(model: string, usage: { inputTokens?: number; outputTokens?: number }, providerMetadata?: unknown) {
-  const reported = (providerMetadata as { gateway?: { cost?: string | number } } | undefined)?.gateway?.cost;
-  if (reported !== undefined && Number.isFinite(Number(reported))) return Math.round(Number(reported) * 1_000_000);
-  const price = PRICES[model] ?? PRICES[MODELS.equilibrado];
+/** O custo de uma resposta, pelos tokens usados e o preço do modelo. */
+export function costMicros(model: string, usage: { inputTokens?: number; outputTokens?: number }) {
+  const price = PRICES[model] ?? FALLBACK_PRICE;
   return Math.round(((usage.inputTokens ?? 0) * price.input + (usage.outputTokens ?? 0) * price.output) * 1_000_000);
 }
 
@@ -197,16 +200,16 @@ export async function runTurn(
 
   const modelId = MODELS[ctx.agent.model] ?? MODELS.equilibrado;
   const result = streamText({
-    model: options.model ?? modelId,
+    model: options.model ?? openaiModel(modelId),
     system: await systemPrompt(db, ctx, now),
     messages,
-    maxOutputTokens: 1500,
+    // Inclui o raciocínio interno do modelo, que também conta como saída.
+    maxOutputTokens: 4000,
   });
 
   const parts = result.fullStream[Symbol.asyncIterator]();
   let reply = "";
   let usage: { inputTokens?: number; outputTokens?: number } = {};
-  let metadata: unknown;
   const buffered: string[] = [];
 
   // Espera o primeiro pedaço de texto: se o modelo falhar antes, responde com erro claro.
@@ -234,7 +237,7 @@ export async function runTurn(
       modality: "texto",
       tokensIn: usage.inputTokens ?? 0,
       tokensOut: usage.outputTokens ?? 0,
-      costMicros: costMicros(modelId, usage, metadata),
+      costMicros: costMicros(modelId, usage),
     });
   }
 
@@ -258,8 +261,6 @@ export async function runTurn(
           if (value.type === "text-delta") {
             reply += value.text;
             send(value.text);
-          } else if (value.type === "finish-step") {
-            metadata = value.providerMetadata;
           } else if (value.type === "finish") {
             usage = { inputTokens: value.totalUsage.inputTokens, outputTokens: value.totalUsage.outputTokens };
           } else if (value.type === "error") {

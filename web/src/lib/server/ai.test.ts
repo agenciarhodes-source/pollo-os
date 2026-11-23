@@ -21,7 +21,7 @@ const usage = (input: number, output: number) => ({
 });
 
 /** Um modelo falso que responde com estes pedaços de texto. */
-function fakeModel(chunks: string[], opts: { failFirst?: boolean; cost?: string } = {}) {
+function fakeModel(chunks: string[], opts: { failFirst?: boolean } = {}) {
   return new MockLanguageModelV4({
     doStream: async () => ({
       stream: simulateReadableStream<LanguageModelV4StreamPart>({
@@ -35,7 +35,6 @@ function fakeModel(chunks: string[], opts: { failFirst?: boolean; cost?: string 
                 type: "finish" as const,
                 finishReason: { unified: "stop" as const, raw: "stop" },
                 usage: usage(1000, 200),
-                providerMetadata: opts.cost ? { gateway: { cost: opts.cost } } : undefined,
               },
             ],
       }),
@@ -66,7 +65,7 @@ afterEach(() => vi.unstubAllEnvs());
 
 describe("conversa com a IA", () => {
   it("devolve a resposta em fluxo e salva as mensagens e o consumo", async () => {
-    const res = await runTurn(db, A, "pollo-ceo", "Como vamos?", { model: fakeModel(["Olá, ", "Ana!"], { cost: "0.0042" }) });
+    const res = await runTurn(db, A, "pollo-ceo", "Como vamos?", { model: fakeModel(["Olá, ", "Ana!"]) });
     expect(res.headers.get("content-type")).toContain("text/plain");
     expect(await res.text()).toBe("Olá, Ana!");
 
@@ -77,15 +76,16 @@ describe("conversa com a IA", () => {
     ]);
 
     const [event] = await db.select().from(schema.usageEvents).where(eq(schema.usageEvents.organizationId, A.orgId));
-    expect(event).toMatchObject({ agentKey: "pollo-ceo", service: "anthropic/claude-sonnet-5.5", modality: "texto", tokensIn: 1000, tokensOut: 200, costMicros: 4200 });
+    expect(event).toMatchObject({ agentKey: "pollo-ceo", service: "gpt-6.1-sol", modality: "texto", tokensIn: 1000, tokensOut: 200, costMicros: 4000 });
     // O consumo de uma empresa não aparece na outra.
     expect(await monthSpendMicros(db, B.orgId)).toBe(0);
   });
 
-  it("sem custo informado, estima pelos tokens do modelo", () => {
-    expect(costMicros("anthropic/claude-sonnet-5.5", { inputTokens: 1000, outputTokens: 200 })).toBe(4000);
-    expect(costMicros("anthropic/claude-haiku-5.5", { inputTokens: 1000, outputTokens: 200 })).toBe(200);
-    expect(costMicros("anthropic/claude-sonnet-5.5", { inputTokens: 1, outputTokens: 1 }, { gateway: { cost: "0.01" } })).toBe(10000);
+  it("calcula o custo pelos tokens e pelo preço do modelo", () => {
+    expect(costMicros("gpt-6.1-sol", { inputTokens: 1000, outputTokens: 200 })).toBe(4000);
+    expect(costMicros("gpt-6-luna", { inputTokens: 1000, outputTokens: 200 })).toBe(200);
+    // Modelo sem preço conhecido conta como caro, para o limite não ficar frouxo.
+    expect(costMicros("modelo-novo", { inputTokens: 1000, outputTokens: 200 })).toBe(20000);
   });
 
   it("recusa com 402 quando a empresa passa do limite do mês, sem chamar a IA", async () => {
@@ -115,9 +115,7 @@ describe("conversa com a IA", () => {
   });
 
   it("sem IA ligada e sem modelo, responde em demonstração e diz isso", async () => {
-    vi.stubEnv("VERCEL", "");
-    vi.stubEnv("VERCEL_OIDC_TOKEN", "");
-    vi.stubEnv("AI_GATEWAY_API_KEY", "");
+    vi.stubEnv("OPENAI_API_KEY", "");
     const res = await runTurn(db, B, "pollo-ceo", "Tem alguém aí?");
     expect(res.headers.get("x-pollo-demo")).toBe("1");
     expect(await res.text()).toContain("Esta não é uma resposta real");

@@ -10,9 +10,8 @@ type Usage = {
 };
 
 const MODEL_NAME: Record<string, string> = {
-  "anthropic/claude-haiku-5.5": "Rápido (Claude Haiku 5.5)",
-  "anthropic/claude-sonnet-5.5": "Equilibrado (Claude Sonnet 5.5)",
-  "anthropic/claude-opus-5.5": "Avançado (Claude Opus 5.5)",
+  "gpt-6-luna": "Rápido (GPT-6 Luna)",
+  "gpt-6.1-sol": "Equilibrado/Avançado (GPT-6.1 Sol)",
 };
 
 const usd = (v: number) =>
@@ -107,8 +106,8 @@ export function UsageScreen() {
             </section>
 
             <p className="text-xs text-muted">
-              A IA passa pelo Vercel AI Gateway. O custo de cada resposta é o informado pelo Gateway ou, quando ele não informa,
-              estimado pelo preço do modelo. Voz ainda não está ligada.
+              A IA usa a conta da OpenAI da empresa. O custo de cada resposta é calculado pelos tokens usados e pelo preço
+              do modelo. Voz ainda não está ligada.
             </p>
           </>
         )}
