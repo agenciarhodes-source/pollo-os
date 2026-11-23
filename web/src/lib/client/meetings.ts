@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import useSWR, { mutate, useSWRConfig } from "swr";
-import { ApiError, type ChatMessage } from "./data";
+import useSWR, { mutate } from "swr";
+import { ApiError } from "./data";
+import { useStreamingChat } from "./stream";
 
 /* A Agenda vista do navegador: sempre pela API, que confere empresa e participantes. */
 
@@ -110,42 +110,9 @@ export async function confirmMinutes(id: string) {
   await mutate(meetingUrl(id));
 }
 
-/** A conversa por texto da reunião. */
+/** A conversa por texto da reunião, com a resposta em fluxo. */
 export function useMeetingChat(id: string) {
-  const url = `${meetingUrl(id)}/messages`;
-  const { mutate: bound } = useSWRConfig();
-  const { data } = useSWR<{ messages: ChatMessage[] }>(url, fetcher);
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function send(text: string) {
-    const clean = text.trim();
-    if (!clean) return;
-    setSending(true);
-    setError(null);
-    try {
-      await bound(
-        url,
-        async (current?: { messages: ChatMessage[] }) => {
-          const { messages } = await request<{ messages: ChatMessage[] }>(url, { method: "POST", body: JSON.stringify({ text: clean }) });
-          return { messages: [...(current?.messages ?? []), ...messages] };
-        },
-        {
-          optimisticData: (current?: { messages: ChatMessage[] }) => ({
-            messages: [...(current?.messages ?? []), { id: `temp-${Date.now()}`, role: "user" as const, text: clean, demo: false }],
-          }),
-          rollbackOnError: true,
-          revalidate: false,
-        },
-      );
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Não foi possível enviar.");
-    } finally {
-      setSending(false);
-    }
-  }
-
-  return { messages: data?.messages ?? [], send, sending, error };
+  return useStreamingChat(`${meetingUrl(id)}/messages`, `${meetingUrl(id)}/stream`);
 }
 
 /* ---------- Datas, no horário de Brasília ou no fuso da reunião ---------- */

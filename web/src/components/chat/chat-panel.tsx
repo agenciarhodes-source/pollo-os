@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import { ArrowUp, ChevronDown, X } from "lucide-react";
 import { Pollo } from "@/components/pollo/pollo";
 import { useChat } from "./chat-provider";
-import { useMessages, useSendMessage } from "@/lib/client/data";
+import { RichText } from "./rich-text";
+import { useAgentChat } from "@/lib/client/data";
+import { useAiStatus } from "@/lib/client/stream";
 
 const STARTERS = ["O que você sabe fazer?", "Me ajude a organizar o meu dia", "Resuma o que aconteceu hoje"];
 
@@ -35,9 +37,11 @@ export function PolloButton() {
 /** A conversa com o agente: um painel à direita (no celular, a tela inteira). */
 export function ChatPanel() {
   const { isOpen, agent, agents, close, switchTo } = useChat();
-  const { messages: saved } = useMessages(agent.id);
-  const { send, sending: typing, error: sendError } = useSendMessage(agent.id);
-  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text }));
+  const { messages: saved, send, sending, error: sendError } = useAgentChat(agent.id);
+  const ai = useAiStatus();
+  const messages = saved.map((m) => ({ id: m.id, from: m.role === "user" ? "voce" : "agente", text: m.text, demo: m.demo }));
+  // "escrevendo…" só até o primeiro pedaço da resposta aparecer.
+  const typing = sending && saved.at(-1)?.role === "user";
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
@@ -91,8 +95,8 @@ export function ChatPanel() {
             <p className="truncate font-medium">{agent.name}</p>
           )}
           <p className="flex items-center gap-1.5 text-xs text-muted">
-            <span className="size-1.5 rounded-full bg-amber-500" aria-hidden />
-            {typing ? "digitando…" : "Em demonstração, sem IA ligada"}
+            <span className={`size-1.5 rounded-full ${ai?.enabled ? "bg-emerald-500" : "bg-amber-500"}`} aria-hidden />
+            {typing ? "escrevendo…" : ai?.enabled ? "IA ligada" : "Em demonstração, sem IA ligada"}
           </p>
         </div>
         <button
@@ -136,9 +140,10 @@ export function ChatPanel() {
               ) : (
                 <li key={m.id} className="mr-6 flex items-end gap-2">
                   <Pollo shape={agent.shape} color={agent.color} face={agent.face} size={26} alive={false} />
-                  <p className="rounded-2xl rounded-bl-md bg-panel px-3.5 py-2 text-[15px] leading-relaxed ring-1 ring-line">
-                    {m.text}
-                  </p>
+                  <div className="rounded-2xl rounded-bl-md bg-panel px-3.5 py-2 text-[15px] leading-relaxed ring-1 ring-line">
+                    {m.demo && <span className="mb-1 block text-xs text-amber-700">demonstração</span>}
+                    <RichText text={m.text} />
+                  </div>
                 </li>
               ),
             )}

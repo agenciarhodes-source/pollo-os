@@ -164,3 +164,19 @@ Branch `pr-d/segundo-cerebro`, a partir da `main` com A, B e C.
 | Delegação entre agentes, tarefas duráveis, execução de ferramentas, aprovações de ações e custo por agente | **Fora deste PR**: dependem da IA ligada |
 | Retenção (por quanto tempo guardar) e exportação da memória | **Fora deste PR** |
 | Testes | 11 novos: privacidade, autoria, busca, ligações entre empresas, ata → memória, visibilidade da atividade |
+
+## IA ligada (Vercel AI Gateway)
+
+Branch `pr-e/ia-ligada`.
+
+| Item | Situação |
+| --- | --- |
+| Modelos pelo AI Gateway: Rápido = `anthropic/claude-haiku-5.5`, Equilibrado = `anthropic/claude-sonnet-5.5` (padrão do Pollo CEO), Avançado = `anthropic/claude-opus-5.5` | Feito |
+| Acesso: na Vercel, OIDC (sem chave); fora dela, `AI_GATEWAY_API_KEY`. Sem nenhum dos dois, respostas de demonstração, marcadas como tal | Feito |
+| Resposta em fluxo na Home, no painel de conversa e na sala de reunião; mensagens e consumo salvos no fim | Feito |
+| Contexto: empresa, pessoa, data, regras (não inventar números, marcar Fato/Hipótese/Recomendação/Decisão, sem ações externas), memória visível à pessoa, pauta e participantes da reunião; últimas 20 mensagens | Feito |
+| Limite por empresa: `AI_MONTHLY_LIMIT_USD` (padrão 5). Passou, 402 com mensagem clara, sem chamar a IA | Feito |
+| Custo de cada resposta: o informado pelo Gateway ou estimado pelo preço do modelo, em `usage_events` | Feito |
+| Consumo & Custos: gasto do mês, barra do limite, por agente e modelo | Feito |
+| Ferramentas, ações com aprovação, delegação entre agentes, voz | **Próximos passos** |
+| Testes | 8 novos com modelo simulado: fluxo, custo, limite, falha da IA, histórico, contexto sem vazar outra empresa, modo demonstração |
