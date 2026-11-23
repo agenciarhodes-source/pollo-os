@@ -4,19 +4,6 @@ const SERVER = "o servidor do Pollo OS, com login, empresas separadas e conversa
 
 /** Os módulos que ainda não funcionam nesta versão, por endereço (sem a barra). */
 export const UNAVAILABLE_MODULES: Record<string, ModuleInfo> = {
-  agenda: {
-    title: "Agenda",
-    summary: "Suas reuniões executivas com o Pollo CEO: próximas sessões, pautas, atas e decisões.",
-    will: [
-      "Marcar uma reunião com o Pollo CEO e montar a pauta",
-      "Conversar por voz na hora marcada, quando a voz estiver conectada",
-      "Revisar e confirmar a ata antes que uma decisão entre na memória da empresa",
-      "Ver o histórico de reuniões, decisões e pendências",
-    ],
-    needs: `${SERVER} Para a voz, um provedor de voz em tempo real.`,
-    note: "A agenda de vendas e de atendimento continua no FlipForm. Esta é a agenda da sua relação com a IA.",
-    link: { href: "/", label: "Conversar com o Pollo CEO" },
-  },
   "visao-geral": {
     title: "Visão Geral",
     summary: "O panorama executivo da empresa, num lugar só, sempre com a fonte e o período de cada número.",

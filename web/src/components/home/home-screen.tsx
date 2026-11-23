@@ -14,7 +14,7 @@ import { POLLO_CEO } from "@/lib/agents";
  */
 const ACTIONS = [
   { id: "voz", label: "Conversar por voz", icon: PhoneCall, href: null, reason: "A voz em tempo real ainda não está conectada." },
-  { id: "reuniao", label: "Preparar reunião", icon: CalendarDays, href: null, reason: "A Agenda ainda não está disponível." },
+  { id: "reuniao", label: "Preparar reunião", icon: CalendarDays, href: "/agenda/nova", reason: null },
   { id: "analisar", label: "Analisar empresa", icon: Gauge, href: null, reason: "Nenhuma fonte de dados está conectada." },
   { id: "agentes", label: "Acompanhar agentes", icon: Bot, href: "/agentes", reason: null },
 ] as const;

@@ -10,5 +10,8 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     include: ["src/**/*.test.{ts,tsx}"],
     css: false,
+    // Os testes do servidor sobem um PostgreSQL em memória (PGlite) por arquivo.
+    testTimeout: 30_000,
+    hookTimeout: 60_000,
   },
 });

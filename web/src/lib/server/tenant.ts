@@ -65,7 +65,9 @@ export async function readJson<T>(request: Request, parse: (value: unknown) => T
   }
   try {
     return parse(body);
-  } catch {
-    throw new HttpError(422, "Algum campo veio vazio ou num formato que não esperávamos.");
+  } catch (error) {
+    // As regras escritas por nós (como "o fim tem de ser depois do início") já vêm em português.
+    const custom = (error as { issues?: { code: string; message: string }[] }).issues?.find((i) => i.code === "custom");
+    throw new HttpError(422, custom?.message ?? "Algum campo veio vazio ou num formato que não esperávamos.");
   }
 }
