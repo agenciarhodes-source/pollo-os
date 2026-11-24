@@ -2134,6 +2134,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "remote_integration_id": {
+          "name": "remote_integration_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {

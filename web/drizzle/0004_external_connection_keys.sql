@@ -2,6 +2,7 @@ CREATE TABLE "external_connection_keys" (
   "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
   "connection_id" uuid NOT NULL,
   "scope" text NOT NULL,
+  "remote_integration_id" text NOT NULL,
   "encrypted_credential" text NOT NULL,
   "verified_at" timestamp with time zone NOT NULL,
   "created_at" timestamp with time zone DEFAULT now() NOT NULL,

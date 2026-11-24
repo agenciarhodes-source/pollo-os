@@ -66,10 +66,19 @@ describe("read key onboarding",()=>{
    {organizationId:"org-a",provider:"flipform",remoteTenantId:A,remoteIntegrationId:I,scope:"integrations.read",encryptedCredential:"protected-a",verifiedAt:new Date()},
    {organizationId:"org-b",provider:"flipform",remoteTenantId:"cccccccc-cccc-4ccc-8ccc-cccccccccccc",remoteIntegrationId:"dddddddd-dddd-4ddd-8ddd-dddddddddddd",scope:"integrations.read",encryptedCredential:"protected-b",verifiedAt:new Date()},
   ]).returning();
-  await db.insert(schema.externalConnectionKeys).values({connectionId:a.id,scope:"forms.read",encryptedCredential:"encrypted",verifiedAt:new Date()});
-  await expect(db.insert(schema.externalConnectionKeys).values({connectionId:a.id,scope:"forms.read",encryptedCredential:"duplicate",verifiedAt:new Date()})).rejects.toThrow();
+  await db.insert(schema.externalConnectionKeys).values({connectionId:a.id,scope:"forms.read",remoteIntegrationId:I,encryptedCredential:"encrypted",verifiedAt:new Date()});
+  await expect(db.insert(schema.externalConnectionKeys).values({connectionId:a.id,scope:"forms.read",remoteIntegrationId:I,encryptedCredential:"duplicate",verifiedAt:new Date()})).rejects.toThrow();
   const fromB=await db.select().from(schema.externalConnectionKeys).where(eq(schema.externalConnectionKeys.connectionId,b.id));
   expect(fromB).toHaveLength(0);
+  // Changed diagnostic identity must not expose keys from an older integration.
+  const replacementIntegration="eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee";
+  await db.update(schema.externalConnections).set({remoteIntegrationId:replacementIntegration})
+    .where(eq(schema.externalConnections.id,a.id));
+  const stale=await db.select().from(schema.externalConnectionKeys).where(and(
+    eq(schema.externalConnectionKeys.connectionId,a.id),
+    eq(schema.externalConnectionKeys.remoteIntegrationId,replacementIntegration),
+  ));
+  expect(stale).toHaveLength(0);
   await db.delete(schema.externalConnections).where(eq(schema.externalConnections.id,a.id));
   const orphan=await db.select().from(schema.externalConnectionKeys).where(eq(schema.externalConnectionKeys.connectionId,a.id));
   expect(orphan).toHaveLength(0);

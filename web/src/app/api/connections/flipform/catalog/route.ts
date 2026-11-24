@@ -14,7 +14,7 @@ export const GET=withTenant(async (request,tenant)=>{
   if(query.size!==1 || query.getAll("resource").length!==1)throw new HttpError(400,"Consulta inválida.");
   const resource=parseResource(query.get("resource"));
   if(!resource)throw new HttpError(400,"Consulta inválida.");
-  const [connection]=await getDb().select({id:schema.externalConnections.id})
+  const [connection]=await getDb().select({id:schema.externalConnections.id,remoteIntegrationId:schema.externalConnections.remoteIntegrationId})
     .from(schema.externalConnections).where(and(
       eq(schema.externalConnections.organizationId,tenant.orgId),
       eq(schema.externalConnections.provider,"flipform"))).limit(1);
@@ -22,7 +22,10 @@ export const GET=withTenant(async (request,tenant)=>{
   const [keyRow]=await getDb().select({secret:schema.externalConnectionKeys.encryptedCredential})
     .from(schema.externalConnectionKeys).where(and(
       eq(schema.externalConnectionKeys.connectionId,connection.id),
-      eq(schema.externalConnectionKeys.scope,READ_RESOURCES[resource].scope))).limit(1);
+      eq(schema.externalConnectionKeys.scope,READ_RESOURCES[resource].scope),
+      // Do not reuse old scoped keys after the verified diagnostic integration changes.
+      eq(schema.externalConnectionKeys.remoteIntegrationId,connection.remoteIntegrationId),
+    )).limit(1);
   if(!keyRow)throw new HttpError(404,"Cadastre primeiro a chave de leitura dessa informação.");
   let token:string;
   try{token=decryptCredential(keyRow.secret,tenant.orgId,getCredentialEncryptionKey());}

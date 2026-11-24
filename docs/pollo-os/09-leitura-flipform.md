@@ -35,3 +35,6 @@ a conexão de diagnóstico já aprovada.
   verificar renovação/aprovação antes do uso prolongado.
 - A chave de leitura deve ser inserida apenas na interface HTTPS, nunca no GitHub
   ou nas conversas com assistentes.
+
+## Troca da integração de diagnóstico
+Cada chave de leitura armazena o `remoteIntegrationId` comprovado no cadastramento. Se a conexão de diagnóstico for alterada para outra integração dentro da mesma empresa, a consulta e o status só aceitam chaves cujo ID corresponda ao da conexão atual. As chaves antigas ficam inoperantes até que sejam substituídas; não são devolvidas ou usadas para consultas.

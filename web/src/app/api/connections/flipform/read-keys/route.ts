@@ -22,11 +22,14 @@ function whereOrg(orgId:string){
 
 export const GET=withTenant(async (_request,tenant)=>{
   owner(tenant.role);
-  const [conn]=await getDb().select({id:schema.externalConnections.id})
+  const [conn]=await getDb().select({id:schema.externalConnections.id,remoteIntegrationId:schema.externalConnections.remoteIntegrationId})
     .from(schema.externalConnections).where(whereOrg(tenant.orgId)).limit(1);
   if(!conn) return NextResponse.json({scopes:[]},{headers:{"Cache-Control":"no-store"}});
   const keys=await getDb().select({scope:schema.externalConnectionKeys.scope,verifiedAt:schema.externalConnectionKeys.verifiedAt})
-    .from(schema.externalConnectionKeys).where(eq(schema.externalConnectionKeys.connectionId,conn.id));
+    .from(schema.externalConnectionKeys).where(and(
+      eq(schema.externalConnectionKeys.connectionId,conn.id),
+      eq(schema.externalConnectionKeys.remoteIntegrationId,conn.remoteIntegrationId),
+    ));
   return NextResponse.json({scopes:keys},{headers:{"Cache-Control":"no-store"}});
 });
 
@@ -48,10 +51,10 @@ export const POST=withTenant(async (request,tenant)=>{
   const now=new Date();
   const encrypted=encryptCredential(body.token,tenant.orgId,key);
   await getDb().insert(schema.externalConnectionKeys).values({
-    connectionId:conn.id,scope,encryptedCredential:encrypted,verifiedAt:now,updatedAt:now,
+    connectionId:conn.id,scope,remoteIntegrationId:identity.integrationId,encryptedCredential:encrypted,verifiedAt:now,updatedAt:now,
   }).onConflictDoUpdate({
     target:[schema.externalConnectionKeys.connectionId,schema.externalConnectionKeys.scope],
-    set:{encryptedCredential:encrypted,verifiedAt:now,updatedAt:now},
+    set:{remoteIntegrationId:identity.integrationId,encryptedCredential:encrypted,verifiedAt:now,updatedAt:now},
   });
   await recordActivity(getDb(),{orgId:tenant.orgId,userId:tenant.userId,action:"integracao.flipform.leitura_autorizada",
     targetType:"acesso",summary:"O proprietário autorizou leitura de "+(scope==="forms.read"?"formulários":"pipelines")+" do FlipForm."});
