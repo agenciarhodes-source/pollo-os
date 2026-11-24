@@ -1,4 +1,3 @@
-import type { FlipFormProbe } from "./flipform";
 import { validateDiagnosticToken } from "./flipform";
 
 const ORIGIN = "https://app.flipform.com.br";
@@ -21,7 +20,7 @@ export type ScopedIdentity =
   | { ok: true; tenantId: string; integrationId: string; scope: FlipFormReadScope }
   | { ok: false; reason: "unauthorized" | "unavailable" | "invalid_response" };
 
-function responseError(status: number): ScopedIdentity {
+function responseError(status: number): Extract<ScopedIdentity, { ok: false }> {
   return {ok:false,reason: status === 401 || status === 403 || status === 404 ? "unauthorized" : "unavailable"};
 }
 const common = (token: string): RequestInit => ({
