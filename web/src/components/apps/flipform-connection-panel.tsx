@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FlipFormReadPanel } from "./flipform-read-panel";
 
 type Status = {
   connected: boolean;
@@ -75,6 +76,7 @@ export function FlipFormConnectionPanel() {
             <button type="button" disabled={busy} onClick={() => void action("disconnect")} className="rounded-xl border border-line px-3 py-2 text-sm disabled:opacity-50">Desconectar</button>
           </div>
           <p className="text-xs text-muted">Desconectar aqui não revoga a chave no FlipForm; revogue-a lá se não for mais utilizar.</p>
+          <FlipFormReadPanel />
         </>
       ) : (
         <>

@@ -401,3 +401,21 @@ export const externalConnections = pgTable(
     uniqueIndex("external_connections_provider_tenant_idx").on(t.provider, t.remoteTenantId),
   ],
 );
+
+/** Scoped, encrypted READ credentials under a previously verified connection. */
+export const externalConnectionKeys = pgTable(
+  "external_connection_keys",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    connectionId: uuid("connection_id").notNull()
+      .references(() => externalConnections.id, { onDelete: "cascade" }),
+    scope: text("scope").notNull(),
+    /** Identity proved by the scoped bearer, not by the UI. */
+    remoteIntegrationId: text("remote_integration_id").notNull(),
+    encryptedCredential: text("encrypted_credential").notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [uniqueIndex("external_connection_keys_conn_scope_idx").on(t.connectionId, t.scope)],
+);
