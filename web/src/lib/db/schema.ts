@@ -374,3 +374,30 @@ export const activityEvents = pgTable(
   },
   (t) => [index("activity_events_org_idx").on(t.organizationId, t.createdAt)],
 );
+
+
+/**
+ * Central connection registry. Each organization owns its credential;
+ * the remote FlipForm tenant is derived from verified M2M identity, never user input.
+ * Only diagnostic scope is supported by the first connector release.
+ */
+export const externalConnections = pgTable(
+  "external_connections",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    organizationId: text("organization_id").notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    provider: text("provider").notNull(),
+    remoteTenantId: text("remote_tenant_id").notNull(),
+    remoteIntegrationId: text("remote_integration_id").notNull(),
+    encryptedCredential: text("encrypted_credential").notNull(),
+    scope: text("scope").notNull(),
+    verifiedAt: timestamp("verified_at", { withTimezone: true }).notNull(),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (t) => [
+    uniqueIndex("external_connections_org_provider_idx").on(t.organizationId, t.provider),
+    uniqueIndex("external_connections_provider_tenant_idx").on(t.provider, t.remoteTenantId),
+  ],
+);
