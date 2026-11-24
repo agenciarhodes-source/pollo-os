@@ -7,6 +7,7 @@ import { Pollo } from "@/components/pollo/pollo";
 import type { Agent } from "@/lib/agents";
 import { CONNECTIONS, POLLO_APPS, type PolloApp } from "@/lib/apps";
 import { setAppAccess, useAgents, useAppAccess } from "@/lib/client/data";
+import { FlipFormConnectionPanel } from "@/components/apps/flipform-connection-panel";
 
 function AppIcon({ app, size = 64 }: { app: PolloApp; size?: number }) {
   const Icon = app.icon;
@@ -127,6 +128,8 @@ function AppPanel({
             <p className="leading-relaxed text-foreground/85">{app.description}</p>
             <Modules app={app} />
           </div>
+
+          {app.id === "flipform" ? <FlipFormConnectionPanel /> : null}
 
           <div>
             <button
