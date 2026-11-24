@@ -10,7 +10,7 @@ export function validateDiagnosticToken(value: unknown): value is string {
 }
 
 /** Must be a new, independent 32-byte key, provided via a secret environment variable. */
-export function getCredentialEncryptionKey(env = process.env): Buffer {
+export function getCredentialEncryptionKey(env: Readonly<Record<string, string | undefined>> = process.env): Buffer {
   const value = env.FLIP_OS_CREDENTIAL_ENCRYPTION_KEY;
   if (!value || !/^[A-Za-z0-9+/]{43}=$/.test(value)) throw new Error("ENCRYPTION_KEY_NOT_CONFIGURED");
   const key = Buffer.from(value, "base64");
