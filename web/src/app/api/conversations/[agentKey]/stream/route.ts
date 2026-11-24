@@ -24,5 +24,5 @@ export const POST = withTenant<Context>(async (request, tenant, { params }) => {
     agent = { key: found.id, name: found.name, purpose: found.purpose, model: found.model as ModelChoice };
   }
 
-  return runTurn(db, { orgId: tenant.orgId, userId: tenant.userId, userName: tenant.userName, agent }, agentKey, text);
+  return runTurn(db, { orgId: tenant.orgId, userId: tenant.userId, userName: tenant.userName, role: tenant.role, agent }, agentKey, text);
 });
